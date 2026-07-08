@@ -109,8 +109,8 @@
   .hero-photo-badge{
     position:absolute;bottom:18px;left:18px;
     background:rgba(13,13,14,0.75);backdrop-filter:blur(8px);
-    border:1px solid var(--line-strong);border-radius:var(--r-full);
-    padding:9px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--ink);
+    border:1px solid rgba(255,255,255,0.2);border-radius:var(--r-full);
+    padding:9px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:#F0EFEA;
   }
   @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px;}.hero{padding:70px 0 60px;}.hero-photo img{height:340px;}}
 
@@ -127,9 +127,12 @@
   .proof-track{display:flex;gap:20px;width:max-content;animation:slide 48s linear infinite;}
   .proof-track-wrap:hover .proof-track{animation-play-state:paused;}
   .proof-card{
+    display:block;text-decoration:none;color:inherit;
     width:240px;flex:0 0 auto;background:var(--bg-elev);border-radius:var(--r-md);
-    overflow:hidden;border:1px solid var(--line);
+    overflow:hidden;border:1px solid var(--line);transition:border-color .2s ease, transform .2s ease;
   }
+  a.proof-card{cursor:pointer;}
+  a.proof-card:hover{border-color:var(--line-strong);transform:translateY(-3px);}
   .proof-card img{width:100%;height:150px;object-fit:cover;}
   .proof-card-body{padding:16px 18px;}
   .proof-card .status{font-size:10.5px;color:var(--gold-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;}
@@ -176,7 +179,7 @@
     background:rgba(13,13,14,0.78);backdrop-filter:blur(6px);color:var(--gold);
     padding:6px 12px;border-radius:var(--r-full);border:1px solid rgba(255,179,0,0.35);
   }
-  .prop-tag.sold{color:var(--ink);border-color:var(--line-strong);}
+  .prop-tag.sold{color:#F0EFEA;border-color:rgba(255,255,255,0.25);}
   .prop-body{padding:22px 24px 26px;}
   .prop-addr{font-family:'Fraunces',serif;font-size:19px;line-height:1.35;font-weight:400;}
   .prop-price{font-size:14.5px;color:var(--ink-mid);margin-top:10px;}
@@ -440,11 +443,12 @@
 
   function metaLine(p){
     const parts = [];
+    if (p.type && p.beds == null && p.baths == null) parts.push(p.type);
     if (p.beds != null) parts.push(`${p.beds} bed`);
     if (p.baths != null) parts.push(`${p.baths} bath`);
     if (p.cars) parts.push(`${p.cars} car`);
-    if (parts.length) return parts.join(' · ');
-    return p.type || '';
+    if (p.sqm) parts.push(`${p.sqm}m²`);
+    return parts.join(' · ');
   }
 
   function normalize(row){
@@ -456,6 +460,7 @@
       beds: row.beds,
       baths: row.baths,
       cars: row.cars,
+      sqm: row.sqm,
       img: row.image_url || PLACEHOLDER_IMG,
       url: row.listing_url || null,
     };
@@ -519,14 +524,16 @@
     `).join('');
 
     const proofItems = sold.map(p => `
-      <div class="proof-card">
+      ${p.url
+        ? `<a class="proof-card" href="${p.url}" target="_blank" rel="noopener noreferrer">`
+        : `<div class="proof-card">`}
         <img src="${p.img}" alt="${p.addr}" loading="lazy">
         <div class="proof-card-body">
           <div class="status">${p.status}</div>
           <div class="addr">${p.addr}</div>
           ${p.price ? `<div class="price">${p.price}</div>` : ''}
         </div>
-      </div>
+      ${p.url ? `</a>` : `</div>`}
     `).join('');
     document.getElementById('proofTrack').innerHTML = proofItems + proofItems;
   }
