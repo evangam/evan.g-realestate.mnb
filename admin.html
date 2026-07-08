@@ -141,6 +141,10 @@
               <input type="text" id="price" placeholder="$1,180,000">
             </div>
             <div>
+              <label for="listingUrl">Listing URL (realestate.com.au, Domain, or your R&amp;H page)</label>
+              <input type="url" id="listingUrl" placeholder="https://www.realestate.com.au/...">
+            </div>
+            <div>
               <label for="photo">Photo</label>
               <input type="file" id="photo" accept="image/*">
             </div>
@@ -372,6 +376,7 @@
     document.getElementById('baths').value = p.baths ?? '';
     document.getElementById('cars').value = p.cars ?? '';
     document.getElementById('price').value = p.price || '';
+    document.getElementById('listingUrl').value = p.listing_url || '';
     document.getElementById('saveBtn').textContent = 'Update listing';
     document.getElementById('cancelEditBtn').style.display = 'inline-block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -414,6 +419,7 @@
         cars: document.getElementById('cars').value ? Number(document.getElementById('cars').value) : null,
         price: document.getElementById('price').value.trim() || null,
         price_disclosed: !!document.getElementById('price').value.trim(),
+        listing_url: document.getElementById('listingUrl').value.trim() || null,
       };
       if (imageUrl) payload.image_url = imageUrl;
 
