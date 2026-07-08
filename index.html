@@ -159,8 +159,9 @@
   .about-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:72px;}
   .about-grid p{color:var(--ink-mid);font-size:16.5px;margin:0 0 20px;}
   .about-grid p.lead{color:var(--ink);font-size:21px;font-family:'Instrument Serif',serif;font-weight:400;line-height:1.5;}
-  .about-photo-wrap{border-radius:var(--r-lg);overflow:hidden;margin-bottom:56px;box-shadow:var(--shadow);}
-  .about-photo{width:100%;aspect-ratio:21/9;object-fit:cover;object-position:top center;display:block;}
+  .about-photo-wrap{margin-bottom:56px;}
+  .about-photo{width:100%;height:70vh;object-fit:cover;object-position:center 30%;display:block;}
+  @media(max-width:900px){.about-photo{height:48vh;}}
   .stat-grid{display:grid;grid-template-columns:1fr;gap:14px;}
   .stat-card{
     background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-md);
@@ -298,10 +299,8 @@
 </div>
 
 <section id="about">
-  <div class="wrap">
-    <div class="about-photo-wrap reveal">
-      <img id="aboutPhoto" class="about-photo" src="https://d2hqr1s9kfm9jo.cloudfront.net/production/images/sales_agents/21244/Evan_gemini.profile.jpg" alt="Evan Gamkrelidze">
-    </div>
+  <div class="about-photo-wrap reveal">
+    <img id="aboutPhoto" class="about-photo" src="https://d2hqr1s9kfm9jo.cloudfront.net/production/images/sales_agents/21244/Evan_gemini.profile.jpg" alt="Evan Gamkrelidze">
   </div>
   <div class="wrap about-grid">
     <div class="reveal">
@@ -553,6 +552,11 @@
     document.getElementById('proofTrack').innerHTML = proofItems + proofItems;
   }
 
+  function formatEmphasis(str){
+    const escaped = str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return escaped.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  }
+
   async function loadSiteContent(){
     if (!isConfigured) return;
     try {
@@ -571,9 +575,9 @@
         document.getElementById('aboutPhoto').src = data.hero_photo_url;
       }
       if (data.logo_url) document.getElementById('navLogo').src = data.logo_url;
-      if (data.bio_lead) document.getElementById('bioLead').textContent = data.bio_lead;
-      if (data.bio_body1) document.getElementById('bioBody1').textContent = data.bio_body1;
-      if (data.bio_body2) document.getElementById('bioBody2').textContent = data.bio_body2;
+      if (data.bio_lead) document.getElementById('bioLead').innerHTML = formatEmphasis(data.bio_lead);
+      if (data.bio_body1) document.getElementById('bioBody1').innerHTML = formatEmphasis(data.bio_body1);
+      if (data.bio_body2) document.getElementById('bioBody2').innerHTML = formatEmphasis(data.bio_body2);
       if (data.stat1_num) document.getElementById('stat1Num').textContent = data.stat1_num;
       if (data.stat1_label) document.getElementById('stat1Label').textContent = data.stat1_label;
       if (data.stat2_num) document.getElementById('stat2Num').textContent = data.stat2_num;
