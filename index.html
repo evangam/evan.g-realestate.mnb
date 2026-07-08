@@ -161,9 +161,11 @@
   /* ---------- Property cards ---------- */
   .prop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
   .prop-card{
+    display:block;text-decoration:none;color:inherit;cursor:default;
     background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-lg);
     overflow:hidden;transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
   }
+  a.prop-card{cursor:pointer;}
   .prop-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--line-strong);}
   .prop-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;position:relative;background:var(--bg-elev-2);}
   .prop-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
@@ -455,7 +457,17 @@
       baths: row.baths,
       cars: row.cars,
       img: row.image_url || PLACEHOLDER_IMG,
+      url: row.listing_url || null,
     };
+  }
+
+  function cardOpenTag(p){
+    return p.url
+      ? `<a class="prop-card" href="${p.url}" target="_blank" rel="noopener noreferrer">`
+      : `<div class="prop-card">`;
+  }
+  function cardCloseTag(p){
+    return p.url ? `</a>` : `</div>`;
   }
 
   async function fetchCategory(category, fallback){
@@ -477,7 +489,7 @@
 
   function renderListings(listings){
     document.getElementById('listingsGrid').innerHTML = listings.map(p => `
-      <div class="prop-card">
+      ${cardOpenTag(p)}
         <div class="prop-img-wrap">
           <img src="${p.img}" alt="${p.addr}" loading="lazy">
           <span class="prop-tag">${p.status}</span>
@@ -487,13 +499,13 @@
           <div class="prop-price">Contact agent</div>
           <div class="prop-meta">${metaLine(p)}</div>
         </div>
-      </div>
+      ${cardCloseTag(p)}
     `).join('');
   }
 
   function renderSold(sold){
     document.getElementById('soldGrid').innerHTML = sold.map(p => `
-      <div class="prop-card">
+      ${cardOpenTag(p)}
         <div class="prop-img-wrap">
           <img src="${p.img}" alt="${p.addr}" loading="lazy">
           <span class="prop-tag sold">${p.status}</span>
@@ -503,7 +515,7 @@
           <div class="prop-price">${p.price ? `Sold for <strong>${p.price}</strong>` : 'Price undisclosed'}</div>
           <div class="prop-meta">${metaLine(p)}</div>
         </div>
-      </div>
+      ${cardCloseTag(p)}
     `).join('');
 
     const proofItems = sold.map(p => `
