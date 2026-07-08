@@ -15,24 +15,30 @@
     --line:rgba(0,0,0,0.10);
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:16px;line-height:1.7;}
-  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.7;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px;}
   header{padding:28px 0;border-bottom:1px solid var(--line);}
   .back{font-size:14px;color:var(--ink-mid);text-decoration:none;}
   .back:hover{color:var(--gold-soft);}
   main{padding:56px 0 100px;}
-  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(32px,5vw,48px);margin:0 0 8px;letter-spacing:-0.015em;}
-  .updated{color:var(--ink-low);font-size:13px;margin-bottom:48px;}
-  h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;margin:44px 0 14px;letter-spacing:-0.01em;}
-  p{color:var(--ink-mid);margin:0 0 16px;}
-  ul{color:var(--ink-mid);padding-left:20px;margin:0 0 16px;}
-  li{margin-bottom:8px;}
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(30px,4.6vw,44px);margin:0 0 8px;letter-spacing:-0.015em;}
+  .updated{color:var(--ink-low);font-size:13px;margin-bottom:12px;}
+  .intro{color:var(--ink-mid);font-size:15px;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--line);}
+  h2{font-family:'Inter',sans-serif;font-weight:700;font-size:16px;margin:36px 0 12px;letter-spacing:-0.005em;}
+  h2 .num{color:var(--gold-soft);margin-right:8px;}
+  p{color:var(--ink-mid);margin:0 0 14px;}
+  ul{color:var(--ink-mid);padding-left:20px;margin:0 0 14px;}
+  li{margin-bottom:6px;}
   a{color:var(--gold-soft);}
-  .disclaimer{
-    background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;
-    padding:20px 22px;font-size:14px;color:var(--ink-mid);margin-bottom:44px;
-  }
+  strong{color:var(--ink);font-weight:600;}
+  .toc{background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;padding:22px 26px;margin-bottom:8px;}
+  .toc-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-low);font-weight:600;margin-bottom:12px;}
+  .toc ol{margin:0;padding-left:18px;color:var(--ink-mid);font-size:14px;columns:2;}
+  .toc li{margin-bottom:6px;}
+  .toc a{color:var(--ink-mid);text-decoration:none;}
+  .toc a:hover{color:var(--gold-soft);}
   footer{padding:32px 0;border-top:1px solid var(--line);color:var(--ink-low);font-size:13px;}
+  @media(max-width:600px){.toc ol{columns:1;}}
 </style>
 </head>
 <body>
@@ -47,40 +53,87 @@
   <div class="wrap">
     <h1>Terms of Use</h1>
     <p class="updated">Last updated: July 2026</p>
+    <p class="intro">These Terms of Use ("Terms") govern your access to and use of this website. By accessing or using this website, you accept these Terms in full. If you do not agree to these Terms, you should not use this website.</p>
 
-    <div class="disclaimer">
-      This is a plain-language summary of the terms that apply to using this website. It is general information only and is not legal advice.
+    <div class="toc">
+      <div class="toc-title">Contents</div>
+      <ol>
+        <li><a href="#s1">Definitions</a></li>
+        <li><a href="#s2">About this website</a></li>
+        <li><a href="#s3">Acceptance of terms</a></li>
+        <li><a href="#s4">Accuracy of information</a></li>
+        <li><a href="#s5">No professional advice</a></li>
+        <li><a href="#s6">External links</a></li>
+        <li><a href="#s7">Intellectual property</a></li>
+        <li><a href="#s8">Enquiries and personal information</a></li>
+        <li><a href="#s9">Disclaimer of warranties</a></li>
+        <li><a href="#s10">Limitation of liability</a></li>
+        <li><a href="#s11">Indemnity</a></li>
+        <li><a href="#s12">Availability of the website</a></li>
+        <li><a href="#s13">Governing law and jurisdiction</a></li>
+        <li><a href="#s14">Severability</a></li>
+        <li><a href="#s15">Changes to these terms</a></li>
+        <li><a href="#s16">Contact</a></li>
+      </ol>
     </div>
 
-    <h2>About this website</h2>
-    <p>This website is the independently operated personal marketing site of Evan Gamkrelidze, a sales agent with Raine &amp; Horne Mosman. It is not an official Raine &amp; Horne corporate website. Content, listings, and sold results are presented here as a record of Evan's own work carried out through that agency.</p>
+    <h2 id="s1"><span class="num">1.</span>Definitions</h2>
+    <p>In these Terms:</p>
+    <ul>
+      <li><strong>"we", "us", "our"</strong> means Evan Gamkrelidze, a sales agent operating this website in his personal capacity.</li>
+      <li><strong>"website"</strong> means this website and all pages, content, and functionality made available on it.</li>
+      <li><strong>"you", "your"</strong> means any person who accesses or uses the website.</li>
+      <li><strong>"Agency"</strong> means Raine &amp; Horne Mosman, the real estate agency through which we are licensed to operate.</li>
+      <li><strong>"content"</strong> means all text, images, listings, sold results, testimonials, and other material published on the website.</li>
+    </ul>
 
-    <h2>Accuracy of information</h2>
-    <p>Property details, prices, and availability shown on this site — including current listings and past sales — are provided for general information only and are subject to change without notice. While reasonable care is taken to keep this information current, no warranty is given as to its accuracy or completeness. You should independently verify any property details before making decisions, and this site should not be relied upon as a substitute for formal property advice, a contract of sale, or a professional appraisal.</p>
+    <h2 id="s2"><span class="num">2.</span>About this website</h2>
+    <p>This website is the independently operated personal marketing website of Evan Gamkrelidze. It is not the official corporate website of Raine &amp; Horne Technology Pty Limited or any Raine &amp; Horne franchise entity. Listings, sold results, and testimonials displayed on this website relate to work performed by us through the Agency, and are presented here as a personal record of that work.</p>
 
-    <h2>Not financial, legal, or investment advice</h2>
-    <p>Nothing on this site constitutes financial, legal, taxation, or investment advice. Any decision to buy, sell, or invest in property should be made with your own independent professional advice tailored to your circumstances.</p>
+    <h2 id="s3"><span class="num">3.</span>Acceptance of terms</h2>
+    <p>By accessing this website you agree to be bound by these Terms and any policies referenced within them, including our <a href="privacy.html">Privacy Policy</a>. We may amend these Terms at any time in accordance with clause 15. Continued use of the website following any amendment constitutes acceptance of the amended Terms.</p>
 
-    <h2>External links</h2>
-    <p>This site links to third-party listing platforms (such as realestate.com.au or Domain) and to Raine &amp; Horne's own website. These links are provided for convenience. We do not control, and are not responsible for, the content, accuracy, or availability of external sites.</p>
+    <h2 id="s4"><span class="num">4.</span>Accuracy of information</h2>
+    <p>Content on this website — including current listings, property features, sold prices, and dates — is provided for general information purposes only and is subject to change without notice. While reasonable care has been taken in preparing this content, we do not warrant, and expressly disclaim, that any content on this website is accurate, complete, reliable, or up to date at the time you access it.</p>
+    <p>You should independently verify any information relevant to a property transaction, including via a contract of sale, a formal appraisal, or direct enquiry with us, before making any decision in reliance on it.</p>
 
-    <h2>Intellectual property</h2>
-    <p>Content on this site — including text, photography, and branding created for this site — belongs to Evan Gamkrelidze unless otherwise indicated. The Raine &amp; Horne name and logo are used to indicate Evan's affiliation with that agency and remain the property of Raine &amp; Horne.</p>
+    <h2 id="s5"><span class="num">5.</span>No professional advice</h2>
+    <p>Nothing on this website constitutes financial, legal, taxation, valuation, or investment advice. Content is general in nature and does not account for your personal circumstances, financial position, or objectives. You should seek independent professional advice before making any property, financial, or legal decision.</p>
 
-    <h2>Limitation of liability</h2>
-    <p>To the extent permitted by law, Evan Gamkrelidze accepts no liability for any loss or damage arising from your use of, or reliance on, information contained on this website, including any errors, omissions, or unavailability of the site.</p>
+    <h2 id="s6"><span class="num">6.</span>External links</h2>
+    <p>This website contains links to third-party websites, including property listing platforms (such as realestate.com.au and Domain) and the Agency's website. These links are provided for your convenience only. We do not operate, endorse, or accept responsibility for the content, accuracy, availability, or privacy practices of any linked website, and your use of any linked website is at your own risk and subject to that website's own terms.</p>
 
-    <h2>Your enquiries</h2>
-    <p>Information submitted through the enquiry form is used to respond to your enquiry — see the <a href="privacy.html">Privacy Policy</a> for details on how that information is handled.</p>
+    <h2 id="s7"><span class="num">7.</span>Intellectual property</h2>
+    <p>Except as stated below, all content on this website is owned by us or used with the permission of its owner and is protected by copyright and other intellectual property laws. You may view and share content for personal, non-commercial purposes only. You must not reproduce, republish, or distribute content from this website for commercial purposes without our prior written consent.</p>
+    <p>The Raine &amp; Horne name, logo, and brand assets displayed on this website remain the property of Raine &amp; Horne and are used to indicate our affiliation with the Agency.</p>
 
-    <h2>Governing law</h2>
-    <p>These terms are governed by the laws of New South Wales, Australia.</p>
+    <h2 id="s8"><span class="num">8.</span>Enquiries and personal information</h2>
+    <p>Where you submit an enquiry through this website, the personal information you provide is collected and used in accordance with our <a href="privacy.html">Privacy Policy</a>, which forms part of these Terms.</p>
 
-    <h2>Changes to these terms</h2>
-    <p>These terms may be updated from time to time. The "last updated" date above reflects the most recent revision.</p>
+    <h2 id="s9"><span class="num">9.</span>Disclaimer of warranties</h2>
+    <p>To the maximum extent permitted by law, this website and its content are provided on an "as is" and "as available" basis, without warranties of any kind, whether express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, accuracy, or non-infringement.</p>
+    <p>Where legislation implies a warranty or condition that cannot lawfully be excluded, that warranty or condition is deemed included, but to the extent permitted by law our liability for breach of it is limited, at our election, to the resupply of the relevant service or information, or the cost of having it resupplied.</p>
 
-    <h2>Contact</h2>
-    <p>For any questions about these terms, contact Evan Gamkrelidze directly via the phone number or enquiry form on this site.</p>
+    <h2 id="s10"><span class="num">10.</span>Limitation of liability</h2>
+    <p>To the maximum extent permitted by law, we exclude all liability (including for negligence) for any direct, indirect, incidental, special, or consequential loss or damage arising out of or in connection with your access to, or use of, this website, including loss of data, loss of profits, or loss arising from reliance on website content, whether or not we were advised of the possibility of such loss.</p>
+
+    <h2 id="s11"><span class="num">11.</span>Indemnity</h2>
+    <p>You agree to indemnify and hold us harmless from and against any claim, loss, damage, liability, or cost (including reasonable legal costs) arising out of your breach of these Terms or your misuse of this website.</p>
+
+    <h2 id="s12"><span class="num">12.</span>Availability of the website</h2>
+    <p>We do not warrant that this website will be available at all times or free from interruption, error, or security vulnerabilities. We may suspend, withdraw, or restrict access to all or part of the website at any time without notice.</p>
+
+    <h2 id="s13"><span class="num">13.</span>Governing law and jurisdiction</h2>
+    <p>These Terms are governed by the laws of New South Wales, Australia. You submit to the non-exclusive jurisdiction of the courts of New South Wales in respect of any dispute arising from these Terms or your use of this website.</p>
+
+    <h2 id="s14"><span class="num">14.</span>Severability</h2>
+    <p>If any provision of these Terms is held to be invalid, illegal, or unenforceable, that provision will be severed from these Terms and the remaining provisions will continue in full force and effect.</p>
+
+    <h2 id="s15"><span class="num">15.</span>Changes to these terms</h2>
+    <p>We may update these Terms at any time without prior notice. The "last updated" date at the top of this page reflects the most recent revision. We encourage you to review these Terms periodically.</p>
+
+    <h2 id="s16"><span class="num">16.</span>Contact</h2>
+    <p>Questions regarding these Terms can be directed to Evan Gamkrelidze via the contact details published on this website.</p>
   </div>
 </main>
 
