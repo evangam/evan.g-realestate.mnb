@@ -537,6 +537,12 @@
       ${cardCloseTag(p)}
     `).join('');
 
+    function addrLines(addr){
+      const idx = addr.indexOf(',');
+      if (idx === -1) return addr;
+      return `${addr.slice(0, idx)}<br>${addr.slice(idx + 1).trim()}`;
+    }
+
     const proofItems = sold.map(p => `
       ${p.url
         ? `<a class="proof-card" href="${p.url}" target="_blank" rel="noopener noreferrer">`
@@ -544,7 +550,7 @@
         <img src="${p.img}" alt="${p.addr}" loading="lazy">
         <div class="proof-card-body">
           <div class="status">${p.status}</div>
-          <div class="addr">${p.addr}</div>
+          <div class="addr">${addrLines(p.addr)}</div>
           ${p.price ? `<div class="price">${p.price}</div>` : ''}
         </div>
       ${p.url ? `</a>` : `</div>`}
