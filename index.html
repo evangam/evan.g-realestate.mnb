@@ -13,6 +13,7 @@
      dashboard once deployed — the script tag below activates on its own.
 ============================================================= -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -609,6 +610,18 @@
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
   // ---- Contact form → leads table ----
+  // ---- Email notification (EmailJS) — sends the enquiry to your inbox ----
+  // 1) Sign up free at emailjs.com, connect your Gmail/Outlook
+  // 2) Create a template with variables: {{name}} {{email}} {{phone}} {{message}}
+  // 3) Fill in the three values below from your EmailJS dashboard
+  const EMAILJS_PUBLIC_KEY = 'YOUR-EMAILJS-PUBLIC-KEY';
+  const EMAILJS_SERVICE_ID = 'YOUR-EMAILJS-SERVICE-ID';
+  const EMAILJS_TEMPLATE_ID = 'YOUR-EMAILJS-TEMPLATE-ID';
+  const emailConfigured = !EMAILJS_PUBLIC_KEY.includes('YOUR-EMAILJS');
+  if (emailConfigured && typeof emailjs !== 'undefined') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
   const form = document.getElementById('leadForm');
   const submitBtn = document.getElementById('submitBtn');
   const formStatus = document.getElementById('formStatus');
@@ -630,13 +643,25 @@
     try {
       const { error } = await supabase.from('leads').insert(payload);
       if (error) throw error;
+
+      // Email notification is best-effort — a lead is already saved in
+      // Supabase even if this fails, so we don't block success on it.
+      if (emailConfigured) {
+        try {
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, payload);
+        } catch (emailErr) {
+          console.warn('Lead saved, but email notification failed:', emailErr);
+        }
+      }
+
       formStatus.textContent = 'Thanks — I\'ll be in touch shortly.';
       formStatus.className = 'form-status ok';
       form.reset();
       if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'website_form' });
     } catch (err) {
-      console.error('Lead submit failed:', err);
-      formStatus.textContent = 'Something went wrong — email me directly at the number above.';
+      console.error('Lead submit failed — full error:', err);
+      const parts = [err.message, err.details, err.hint, err.code].filter(Boolean);
+      formStatus.textContent = 'Error: ' + (parts.join(' | ') || JSON.stringify(err));
       formStatus.className = 'form-status err';
     } finally {
       submitBtn.disabled = false;
