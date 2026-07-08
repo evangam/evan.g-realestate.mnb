@@ -15,24 +15,35 @@
     --line:rgba(0,0,0,0.10);
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:16px;line-height:1.7;}
-  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.7;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px;}
   header{padding:28px 0;border-bottom:1px solid var(--line);}
   .back{font-size:14px;color:var(--ink-mid);text-decoration:none;}
   .back:hover{color:var(--gold-soft);}
   main{padding:56px 0 100px;}
-  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(32px,5vw,48px);margin:0 0 8px;letter-spacing:-0.015em;}
-  .updated{color:var(--ink-low);font-size:13px;margin-bottom:48px;}
-  h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;margin:44px 0 14px;letter-spacing:-0.01em;}
-  p{color:var(--ink-mid);margin:0 0 16px;}
-  ul{color:var(--ink-mid);padding-left:20px;margin:0 0 16px;}
-  li{margin-bottom:8px;}
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(30px,4.6vw,44px);margin:0 0 8px;letter-spacing:-0.015em;}
+  .updated{color:var(--ink-low);font-size:13px;margin-bottom:12px;}
+  .intro{color:var(--ink-mid);font-size:15px;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--line);}
+  h2{font-family:'Inter',sans-serif;font-weight:700;font-size:16px;margin:36px 0 12px;letter-spacing:-0.005em;}
+  h2 .num{color:var(--gold-soft);margin-right:8px;}
+  h3{font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;color:var(--ink);margin:20px 0 8px;}
+  p{color:var(--ink-mid);margin:0 0 14px;}
+  ul{color:var(--ink-mid);padding-left:20px;margin:0 0 14px;}
+  li{margin-bottom:6px;}
   a{color:var(--gold-soft);}
-  .disclaimer{
-    background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;
-    padding:20px 22px;font-size:14px;color:var(--ink-mid);margin-bottom:44px;
-  }
+  strong{color:var(--ink);font-weight:600;}
+  table{width:100%;border-collapse:collapse;margin:0 0 20px;font-size:14px;}
+  th,td{text-align:left;padding:10px 14px;border:1px solid var(--line);vertical-align:top;}
+  th{background:var(--bg-elev);color:var(--ink);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;}
+  td{color:var(--ink-mid);}
+  .toc{background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;padding:22px 26px;margin-bottom:8px;}
+  .toc-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-low);font-weight:600;margin-bottom:12px;}
+  .toc ol{margin:0;padding-left:18px;color:var(--ink-mid);font-size:14px;columns:2;}
+  .toc li{margin-bottom:6px;}
+  .toc a{color:var(--ink-mid);text-decoration:none;}
+  .toc a:hover{color:var(--gold-soft);}
   footer{padding:32px 0;border-top:1px solid var(--line);color:var(--ink-low);font-size:13px;}
+  @media(max-width:600px){.toc ol{columns:1;}table{font-size:13px;}th,td{padding:8px 10px;}}
 </style>
 </head>
 <body>
@@ -47,50 +58,93 @@
   <div class="wrap">
     <h1>Privacy Policy</h1>
     <p class="updated">Last updated: July 2026</p>
+    <p class="intro">This Privacy Policy explains how personal information submitted through this website is collected, used, disclosed, and protected. It applies to this website only and should be read together with our <a href="terms.html">Terms of Use</a>.</p>
 
-    <div class="disclaimer">
-      This policy explains what happens to your information when you use this website. It's written in plain language rather than dense legal text — if anything is unclear, contact details are at the bottom of this page.
+    <div class="toc">
+      <div class="toc-title">Contents</div>
+      <ol>
+        <li><a href="#p1">Who we are</a></li>
+        <li><a href="#p2">Personal information we collect</a></li>
+        <li><a href="#p3">How we collect it</a></li>
+        <li><a href="#p4">How we use your information</a></li>
+        <li><a href="#p5">Disclosure to third parties</a></li>
+        <li><a href="#p6">Overseas storage and disclosure</a></li>
+        <li><a href="#p7">Cookies and analytics</a></li>
+        <li><a href="#p8">Data security</a></li>
+        <li><a href="#p9">Data retention</a></li>
+        <li><a href="#p10">Access and correction</a></li>
+        <li><a href="#p11">Complaints</a></li>
+        <li><a href="#p12">Changes to this policy</a></li>
+        <li><a href="#p13">Contact</a></li>
+      </ol>
     </div>
 
-    <h2>Who this policy covers</h2>
-    <p>This website is the independently operated personal marketing site of Evan Gamkrelidze, a sales agent with Raine &amp; Horne Mosman. It is not an official Raine &amp; Horne corporate website, though listings and sales figures shown relate to work carried out through that agency.</p>
+    <h2 id="p1"><span class="num">1.</span>Who we are</h2>
+    <p>This website is operated by Evan Gamkrelidze, a sales agent with Raine &amp; Horne Mosman ("we", "us", "our"). This is not the official website of Raine &amp; Horne Technology Pty Limited or any Raine &amp; Horne franchise entity.</p>
 
-    <h2>What information is collected</h2>
-    <p>When you submit the enquiry form on this site, the following is collected:</p>
+    <h2 id="p2"><span class="num">2.</span>Personal information we collect</h2>
+    <p>We collect the following personal information when you interact with this website:</p>
+    <table>
+      <tr><th>Information</th><th>When it's collected</th></tr>
+      <tr><td>Name</td><td>When you submit the enquiry form</td></tr>
+      <tr><td>Email address</td><td>When you submit the enquiry form</td></tr>
+      <tr><td>Phone number</td><td>When you submit the enquiry form, if provided</td></tr>
+      <tr><td>Message content</td><td>Whatever you choose to include in the enquiry form</td></tr>
+      <tr><td>General usage data</td><td>Automatically, via analytics (see clause 7)</td></tr>
+    </table>
+
+    <h2 id="p3"><span class="num">3.</span>How we collect it</h2>
+    <p>We collect personal information directly from you when you voluntarily submit it through the enquiry form on this website. We do not collect personal information from third parties for the purposes of this website.</p>
+
+    <h2 id="p4"><span class="num">4.</span>How we use your information</h2>
+    <p>We use the personal information you provide to:</p>
     <ul>
-      <li>Your name</li>
-      <li>Your email address</li>
-      <li>Your phone number (if provided)</li>
-      <li>Any message you enter</li>
+      <li>respond to your enquiry regarding buying, selling, leasing, or obtaining an appraisal;</li>
+      <li>maintain a record of your enquiry in our client management system for follow-up; and</li>
+      <li>comply with any legal or regulatory obligations that apply to us as a licensed real estate agent.</li>
     </ul>
-    <p>The site also uses standard website analytics (Google Analytics and Vercel Analytics) which collect general, non-identifying usage data such as pages visited and approximate location — this is the same kind of data most websites collect and does not identify you personally.</p>
+    <p>We do not use your personal information for any purpose other than those listed above without your consent, and we do not sell or rent your personal information to third parties.</p>
 
-    <h2>How your information is used</h2>
-    <p>Enquiry details are used solely to respond to your enquiry and to follow up regarding buying, selling, or appraisal requests. Your details are stored in a private customer database (via Supabase) and a personal contact management system, and are not sold, rented, or shared with third parties for marketing purposes.</p>
+    <h2 id="p5"><span class="num">5.</span>Disclosure to third parties</h2>
+    <p>We disclose personal information collected through this website to the following third-party service providers, solely to enable them to provide the services described:</p>
+    <table>
+      <tr><th>Provider</th><th>Purpose</th></tr>
+      <tr><td>Supabase</td><td>Secure storage of enquiry and listing data</td></tr>
+      <tr><td>EmailJS</td><td>Sending email notifications when an enquiry is submitted</td></tr>
+      <tr><td>Google Analytics</td><td>Anonymous website usage statistics</td></tr>
+      <tr><td>Vercel</td><td>Website hosting and anonymous usage statistics</td></tr>
+    </table>
+    <p>Each provider processes information in accordance with its own privacy policy and may be located outside Australia (see clause 6).</p>
 
-    <h2>Where your information is stored</h2>
-    <p>Enquiry data is stored securely with Supabase, a third-party database provider, and may also trigger an email notification via EmailJS so enquiries can be responded to promptly. Reasonable steps are taken to keep this information secure, but as with any online system, no transmission over the internet can be guaranteed 100% secure.</p>
+    <h2 id="p6"><span class="num">6.</span>Overseas storage and disclosure</h2>
+    <p>Some of the third-party service providers listed in clause 5 may store or process information on servers located outside Australia. By submitting your information through this website, you acknowledge that it may be transferred to, and stored in, a jurisdiction other than Australia, which may not have equivalent privacy protections to those under Australian law.</p>
 
-    <h2>Third-party services used by this site</h2>
+    <h3>Analytics providers</h3>
     <ul>
-      <li><strong>Supabase</strong> — stores enquiry and listing data</li>
-      <li><strong>EmailJS</strong> — sends email notifications when an enquiry is submitted</li>
-      <li><strong>Google Analytics &amp; Vercel Analytics</strong> — anonymous site usage statistics</li>
-      <li><strong>Vercel</strong> — website hosting</li>
+      <li>Google Analytics — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">privacy policy</a></li>
+      <li>Vercel — <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">privacy policy</a></li>
     </ul>
-    <p>Each of these providers has its own privacy practices governing the data they process on this site's behalf.</p>
 
-    <h2>Cookies</h2>
-    <p>This site uses standard analytics cookies (via Google Analytics) to understand how visitors use the site. You can disable cookies through your browser settings at any time; doing so won't affect your ability to browse listings or submit an enquiry.</p>
+    <h2 id="p7"><span class="num">7.</span>Cookies and analytics</h2>
+    <p>This website uses cookies via Google Analytics and Vercel Analytics to collect general, non-identifying information about how visitors use the website, such as pages viewed and approximate geographic region. This information does not identify you personally. You can disable cookies at any time through your browser settings; doing so will not affect your ability to browse this website or submit an enquiry.</p>
 
-    <h2>Your rights</h2>
-    <p>You can request access to, correction of, or deletion of any personal information held about you by contacting Evan directly using the details below.</p>
+    <h2 id="p8"><span class="num">8.</span>Data security</h2>
+    <p>We take reasonable technical and organisational steps to protect personal information from misuse, loss, and unauthorised access, including the use of access-controlled database infrastructure. However, no method of transmission over the internet, or method of electronic storage, is completely secure, and we cannot guarantee absolute security of information you transmit to us.</p>
 
-    <h2>Changes to this policy</h2>
-    <p>This policy may be updated from time to time to reflect changes in how the site operates. The "last updated" date above will reflect the most recent revision.</p>
+    <h2 id="p9"><span class="num">9.</span>Data retention</h2>
+    <p>We retain personal information collected through this website for as long as necessary to respond to your enquiry and maintain an accurate client record, or as required by law, whichever is longer.</p>
 
-    <h2>Contact</h2>
-    <p>For any privacy questions or requests, contact Evan Gamkrelidze directly via the phone number or enquiry form on this site.</p>
+    <h2 id="p10"><span class="num">10.</span>Access and correction</h2>
+    <p>You may request access to, or correction of, any personal information we hold about you by contacting us using the details in clause 13. We will respond to reasonable requests within a reasonable timeframe.</p>
+
+    <h2 id="p11"><span class="num">11.</span>Complaints</h2>
+    <p>If you have a concern about how your personal information has been handled, please contact us in the first instance using the details below. If you are not satisfied with our response, you may lodge a complaint with the Office of the Australian Information Commissioner (OAIC) at <a href="https://www.oaic.gov.au" target="_blank" rel="noopener noreferrer">oaic.gov.au</a>.</p>
+
+    <h2 id="p12"><span class="num">12.</span>Changes to this policy</h2>
+    <p>We may update this Privacy Policy from time to time to reflect changes in our practices or legal obligations. The "last updated" date at the top of this page reflects the most recent revision.</p>
+
+    <h2 id="p13"><span class="num">13.</span>Contact</h2>
+    <p>For any privacy-related questions or requests, contact Evan Gamkrelidze via the phone number or enquiry form published on this website.</p>
   </div>
 </main>
 
