@@ -459,15 +459,20 @@
     if (!input.files || !input.files[0]) return null;
     const file = input.files[0];
     console.log(`Uploading ${inputId}:`, { name: file.name, size: file.size, type: file.type });
+
+    if (!file.size || file.size === 0){
+      throw new Error(`Photo upload (${inputId}) failed: the selected file is 0 bytes — try re-selecting it, or try a different photo.`);
+    }
+
     const path = `${folder}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g,'_')}`;
-    const { error } = await supabase.storage.from('property-photos').upload(path, file, {
+    const { data: uploadData, error } = await supabase.storage.from('property-photos').upload(path, file, {
       upsert: true,
-      contentType: file.type || 'application/octet-stream',
     });
     if (error) {
-      console.error(`Photo upload failed for ${inputId}:`, error);
-      throw new Error(`Photo upload (${inputId}) failed: ${error.message || JSON.stringify(error)}`);
+      console.error(`Photo upload failed for ${inputId} — full raw error:`, error);
+      throw new Error(`Photo upload (${inputId}) failed: ${JSON.stringify(error)}`);
     }
+    console.log(`Upload succeeded for ${inputId}:`, uploadData);
     const { data } = supabase.storage.from('property-photos').getPublicUrl(path);
     return data.publicUrl;
   }
