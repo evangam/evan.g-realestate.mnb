@@ -111,14 +111,7 @@
             </div>
             <div>
               <label for="status">Status</label>
-              <select id="status">
-                <option>For Sale</option>
-                <option>Auction</option>
-                <option>Sold</option>
-                <option>Sold via Private Treaty</option>
-                <option>Sold Prior to Auction</option>
-                <option>Auctioned</option>
-              </select>
+              <select id="status"></select>
             </div>
             <div>
               <label for="propertyType">Type</label>
@@ -268,6 +261,18 @@
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let activeCategory = 'current';
+
+  const STATUS_OPTIONS = {
+    current: ['For Sale', 'Auction'],
+    sold: ['Off Market', 'Private Treaty', 'Prior to Auction', 'Auction'],
+  };
+
+  function updateStatusOptions(){
+    const select = document.getElementById('status');
+    const options = STATUS_OPTIONS[activeCategory] || STATUS_OPTIONS.current;
+    select.innerHTML = options.map(o => `<option>${o}</option>`).join('');
+  }
+  updateStatusOptions();
   let editingId = null;
 
   const loginView = document.getElementById('loginView');
@@ -322,6 +327,7 @@
         activeCategory === 'current' ? 'Add a current listing' : 'Add a sold result';
       document.getElementById('listTitle').textContent =
         activeCategory === 'current' ? 'Current listings' : 'Sold results';
+      updateStatusOptions();
       resetForm();
       loadList();
     });
