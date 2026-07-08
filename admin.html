@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Listings Admin — Evan Gamkrelidze</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF8; --bg-elev:#FFFFFF; --bg-elev-2:#F1F0EC;
+    --ink:#17171A; --ink-mid:#5A5A57; --ink-low:#8C8C88;
+    --gold:#FFB300; --gold-soft:#B8790A;
+    --line:rgba(0,0,0,0.10); --line-strong:rgba(0,0,0,0.16);
+    --r-lg:18px; --r-md:12px; --r-full:999px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;line-height:1.55;}
+  h1,h2{font-family:'Fraunces',serif;font-weight:500;margin:0;}
+  .wrap{max-width:960px;margin:0 auto;padding:48px 28px 100px;}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:12px;}
+  .top h1{font-size:26px;}
+  .badge{font-size:12px;color:var(--ink-mid);font-family:'Inter',sans-serif;}
+  button{font-family:'Inter',sans-serif;cursor:pointer;border:none;}
+  .btn-primary{background:var(--gold);color:#171100;font-weight:600;font-size:13.5px;padding:11px 20px;border-radius:var(--r-full);}
+  .btn-primary:hover{filter:brightness(1.03);}
+  .btn-ghost{background:transparent;border:1px solid var(--line-strong);color:var(--ink);font-size:13px;padding:9px 16px;border-radius:var(--r-full);}
+  .btn-danger{background:transparent;border:1px solid rgba(200,60,60,0.4);color:#B33;font-size:12.5px;padding:7px 13px;border-radius:var(--r-full);}
+  .btn-small{background:var(--bg-elev-2);border:1px solid var(--line);color:var(--ink);font-size:12.5px;padding:7px 13px;border-radius:var(--r-full);}
+
+  /* Login */
+  #loginView{max-width:380px;margin:120px auto;text-align:center;}
+  #loginView h1{font-size:24px;margin-bottom:8px;}
+  #loginView p{color:var(--ink-mid);font-size:14px;margin-bottom:28px;}
+  .login-card{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-lg);padding:32px;text-align:left;}
+  label{font-size:12.5px;color:var(--ink-mid);margin-bottom:6px;display:block;font-weight:500;}
+  input,select,textarea{
+    width:100%;background:var(--bg-elev-2);border:1px solid var(--line-strong);border-radius:var(--r-md);
+    color:var(--ink);font-family:'Inter',sans-serif;font-size:14.5px;padding:11px 13px;margin-bottom:16px;
+  }
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-soft);}
+  #loginStatus{font-size:13px;color:#B33;min-height:16px;margin-top:4px;}
+
+  /* App */
+  #appView{display:none;}
+  .tabs{display:flex;gap:8px;margin-bottom:24px;}
+  .tab{padding:9px 18px;border-radius:var(--r-full);font-size:13.5px;font-weight:500;background:var(--bg-elev-2);color:var(--ink-mid);cursor:pointer;}
+  .tab.active{background:var(--ink);color:#fff;}
+
+  .panel{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px;margin-bottom:24px;}
+  .panel h2{font-size:16px;margin-bottom:18px;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
+  .form-grid .full{grid-column:1/-1;}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 16px;}
+
+  .list-item{
+    display:flex;gap:16px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:var(--r-md);margin-bottom:10px;
+  }
+  .list-item img{width:64px;height:48px;object-fit:cover;border-radius:8px;background:var(--bg-elev-2);flex-shrink:0;}
+  .list-item .info{flex:1;min-width:0;}
+  .list-item .addr{font-family:'Fraunces',serif;font-size:15px;}
+  .list-item .meta{font-size:12.5px;color:var(--ink-mid);margin-top:2px;}
+  .list-item .actions{display:flex;gap:8px;flex-shrink:0;}
+  .empty{color:var(--ink-low);font-size:14px;padding:20px 0;text-align:center;}
+  .save-status{font-size:13px;min-height:16px;margin-top:10px;}
+  .save-status.ok{color:#2E8B3E;} .save-status.err{color:#B33;}
+</style>
+</head>
+<body>
+
+<div id="loginView">
+  <h1>Listings Admin</h1>
+  <p>Sign in to manage your listings and sold results.</p>
+  <div class="login-card">
+    <label for="loginEmail">Email</label>
+    <input type="email" id="loginEmail" autocomplete="username">
+    <label for="loginPass">Password</label>
+    <input type="password" id="loginPass" autocomplete="current-password">
+    <button class="btn-primary" style="width:100%;" id="loginBtn">Sign in</button>
+    <p id="loginStatus"></p>
+  </div>
+</div>
+
+<div id="appView">
+  <div class="wrap">
+    <div class="top">
+      <h1>Listings Admin</h1>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span class="badge" id="userBadge"></span>
+        <button class="btn-ghost" id="logoutBtn">Sign out</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-cat="current">Current listings</div>
+      <div class="tab" data-cat="sold">Sold results</div>
+      <div class="tab" data-cat="settings">Settings</div>
+    </div>
+
+    <div id="propertiesPanels">
+      <div class="panel">
+        <h2 id="formTitle">Add a current listing</h2>
+        <form id="propForm">
+          <input type="hidden" id="editId">
+          <div class="form-grid">
+            <div class="full">
+              <label for="address">Address</label>
+              <input type="text" id="address" required placeholder="e.g. 12 Orlando Avenue, Mosman NSW 2088">
+            </div>
+            <div>
+              <label for="status">Status</label>
+              <select id="status">
+                <option>For Sale</option>
+                <option>Auction</option>
+                <option>Sold</option>
+                <option>Sold Prior to Auction</option>
+                <option>Auctioned</option>
+              </select>
+            </div>
+            <div>
+              <label for="propertyType">Type</label>
+              <input type="text" id="propertyType" placeholder="House / Apartment">
+            </div>
+            <div class="row3 full">
+              <div>
+                <label for="beds">Beds</label>
+                <input type="number" id="beds" min="0">
+              </div>
+              <div>
+                <label for="baths">Baths</label>
+                <input type="number" id="baths" min="0">
+              </div>
+              <div>
+                <label for="cars">Car spaces</label>
+                <input type="number" id="cars" min="0">
+              </div>
+            </div>
+            <div>
+              <label for="price">Price (leave blank if undisclosed)</label>
+              <input type="text" id="price" placeholder="$1,180,000">
+            </div>
+            <div>
+              <label for="photo">Photo</label>
+              <input type="file" id="photo" accept="image/*">
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" id="saveBtn">Save listing</button>
+          <button type="button" class="btn-small" id="cancelEditBtn" style="display:none;margin-left:8px;">Cancel edit</button>
+          <p class="save-status" id="saveStatus"></p>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2 id="listTitle">Current listings</h2>
+        <div id="listContainer"><p class="empty">Loading…</p></div>
+      </div>
+    </div>
+
+    <div id="settingsPanel" style="display:none;">
+      <div class="panel">
+        <h2>Profile &amp; photos</h2>
+        <form id="settingsForm">
+          <div class="form-grid">
+            <div>
+              <label for="setPhone">Phone number</label>
+              <input type="text" id="setPhone" placeholder="0402 466 066">
+            </div>
+            <div></div>
+            <div class="full">
+              <label for="setHeroPhoto">Hero / profile photo</label>
+              <input type="file" id="setHeroPhoto" accept="image/*">
+            </div>
+            <div class="full">
+              <label for="setLogo">Logo</label>
+              <input type="file" id="setLogo" accept="image/*">
+            </div>
+          </div>
+
+          <h2 style="margin-top:8px;">Bio</h2>
+          <div class="form-grid">
+            <div class="full">
+              <label for="setBioLead">Opening line (large text)</label>
+              <textarea id="setBioLead" rows="2"></textarea>
+            </div>
+            <div class="full">
+              <label for="setBioBody1">Paragraph two</label>
+              <textarea id="setBioBody1" rows="3"></textarea>
+            </div>
+            <div class="full">
+              <label for="setBioBody2">Paragraph three</label>
+              <textarea id="setBioBody2" rows="3"></textarea>
+            </div>
+          </div>
+
+          <h2 style="margin-top:8px;">Stat cards</h2>
+          <div class="row3 full">
+            <div>
+              <label for="stat1Num">Stat 1 number</label>
+              <input type="text" id="stat1Num" placeholder="10">
+              <label for="stat1Label">Stat 1 label</label>
+              <input type="text" id="stat1Label" placeholder="Years, Lower North Shore">
+            </div>
+            <div>
+              <label for="stat2Num">Stat 2 number</label>
+              <input type="text" id="stat2Num" placeholder="$5.5M">
+              <label for="stat2Label">Stat 2 label</label>
+              <input type="text" id="stat2Label" placeholder="Highest recorded sale">
+            </div>
+            <div>
+              <label for="stat3Num">Stat 3 number</label>
+              <input type="text" id="stat3Num" placeholder="6">
+              <label for="stat3Label">Stat 3 label</label>
+              <input type="text" id="stat3Label" placeholder="Client testimonials on record">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="settingsSaveBtn" style="margin-top:8px;">Save settings</button>
+          <p class="save-status" id="settingsSaveStatus"></p>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Add a testimonial</h2>
+        <form id="testiForm">
+          <input type="hidden" id="testiEditId">
+          <label for="testiQuote">Quote</label>
+          <textarea id="testiQuote" rows="2" required placeholder="What the client said, in a sentence or two."></textarea>
+          <label for="testiWho">Name, role</label>
+          <input type="text" id="testiWho" required placeholder="e.g. Katie, Purchaser">
+          <button type="submit" class="btn-primary" id="testiSaveBtn">Save testimonial</button>
+          <button type="button" class="btn-small" id="testiCancelBtn" style="display:none;margin-left:8px;">Cancel edit</button>
+          <p class="save-status" id="testiSaveStatus"></p>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Testimonials</h2>
+        <div id="testiListContainer"><p class="empty">Loading…</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+  Fill these in from Project Settings → API (same project as
+  Touch Point and the public site).
+============================================================= -->
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://mmznrgyqmcwgcbojfzkg.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tem5yZ3lxbWN3Z2Nib2pmemtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4OTkxODMsImV4cCI6MjA5ODQ3NTE4M30.RzOySFa1BIB93FdBLS6PlrQltWyGPpqXqUYeHosCGDo';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let activeCategory = 'current';
+  let editingId = null;
+
+  const loginView = document.getElementById('loginView');
+  const appView = document.getElementById('appView');
+  const loginStatus = document.getElementById('loginStatus');
+  const userBadge = document.getElementById('userBadge');
+
+  async function checkSession(){
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session){
+      loginView.style.display = 'none';
+      appView.style.display = 'block';
+      userBadge.textContent = session.user.email;
+      loadList();
+    } else {
+      loginView.style.display = 'block';
+      appView.style.display = 'none';
+    }
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    loginStatus.textContent = '';
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPass').value;
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error){ loginStatus.textContent = error.message; return; }
+    checkSession();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    checkSession();
+  });
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeCategory = tab.dataset.cat;
+
+      if (activeCategory === 'settings'){
+        document.getElementById('propertiesPanels').style.display = 'none';
+        document.getElementById('settingsPanel').style.display = 'block';
+        loadSiteContent();
+        loadTestimonials();
+        return;
+      }
+
+      document.getElementById('propertiesPanels').style.display = 'block';
+      document.getElementById('settingsPanel').style.display = 'none';
+      document.getElementById('formTitle').textContent =
+        activeCategory === 'current' ? 'Add a current listing' : 'Add a sold result';
+      document.getElementById('listTitle').textContent =
+        activeCategory === 'current' ? 'Current listings' : 'Sold results';
+      resetForm();
+      loadList();
+    });
+  });
+
+  function resetForm(){
+    editingId = null;
+    document.getElementById('propForm').reset();
+    document.getElementById('editId').value = '';
+    document.getElementById('saveBtn').textContent = 'Save listing';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+  }
+  document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+
+  async function loadList(){
+    const container = document.getElementById('listContainer');
+    container.innerHTML = '<p class="empty">Loading…</p>';
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('category', activeCategory)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (error){
+      container.innerHTML = `<p class="empty">Couldn't load listings: ${error.message}</p>`;
+      return;
+    }
+    if (!data.length){
+      container.innerHTML = '<p class="empty">Nothing here yet — add one above.</p>';
+      return;
+    }
+    container.innerHTML = data.map(p => `
+      <div class="list-item">
+        <img src="${p.image_url || ''}" alt="" onerror="this.style.visibility='hidden'">
+        <div class="info">
+          <div class="addr">${p.address}</div>
+          <div class="meta">${p.status}${p.price ? ' · ' + p.price : ''}${p.property_type ? ' · ' + p.property_type : ''}</div>
+        </div>
+        <div class="actions">
+          <button class="btn-small" data-edit="${p.id}">Edit</button>
+          <button class="btn-danger" data-delete="${p.id}">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('[data-edit]').forEach(btn => {
+      btn.addEventListener('click', () => editItem(data.find(d => d.id === btn.dataset.edit)));
+    });
+    container.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', () => deleteItem(btn.dataset.delete));
+    });
+  }
+
+  function editItem(p){
+    editingId = p.id;
+    document.getElementById('editId').value = p.id;
+    document.getElementById('address').value = p.address || '';
+    document.getElementById('status').value = p.status || 'For Sale';
+    document.getElementById('propertyType').value = p.property_type || '';
+    document.getElementById('beds').value = p.beds ?? '';
+    document.getElementById('baths').value = p.baths ?? '';
+    document.getElementById('cars').value = p.cars ?? '';
+    document.getElementById('price').value = p.price || '';
+    document.getElementById('saveBtn').textContent = 'Update listing';
+    document.getElementById('cancelEditBtn').style.display = 'inline-block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function deleteItem(id){
+    if (!confirm('Delete this listing? This can\'t be undone.')) return;
+    const { error } = await supabase.from('properties').delete().eq('id', id);
+    if (error){ alert('Delete failed: ' + error.message); return; }
+    loadList();
+  }
+
+  document.getElementById('propForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveStatus = document.getElementById('saveStatus');
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.disabled = true;
+    saveStatus.textContent = 'Saving…';
+    saveStatus.className = 'save-status';
+
+    try {
+      let imageUrl = null;
+      const fileInput = document.getElementById('photo');
+      if (fileInput.files && fileInput.files[0]){
+        const file = fileInput.files[0];
+        const path = `${activeCategory}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g,'_')}`;
+        const { error: upErr } = await supabase.storage.from('property-photos').upload(path, file, { upsert: true });
+        if (upErr) throw upErr;
+        const { data: pub } = supabase.storage.from('property-photos').getPublicUrl(path);
+        imageUrl = pub.publicUrl;
+      }
+
+      const payload = {
+        category: activeCategory,
+        address: document.getElementById('address').value.trim(),
+        status: document.getElementById('status').value,
+        property_type: document.getElementById('propertyType').value.trim() || null,
+        beds: document.getElementById('beds').value ? Number(document.getElementById('beds').value) : null,
+        baths: document.getElementById('baths').value ? Number(document.getElementById('baths').value) : null,
+        cars: document.getElementById('cars').value ? Number(document.getElementById('cars').value) : null,
+        price: document.getElementById('price').value.trim() || null,
+        price_disclosed: !!document.getElementById('price').value.trim(),
+      };
+      if (imageUrl) payload.image_url = imageUrl;
+
+      let error;
+      if (editingId){
+        ({ error } = await supabase.from('properties').update(payload).eq('id', editingId));
+      } else {
+        ({ error } = await supabase.from('properties').insert(payload));
+      }
+      if (error) throw error;
+
+      saveStatus.textContent = 'Saved.';
+      saveStatus.className = 'save-status ok';
+      resetForm();
+      loadList();
+    } catch (err){
+      console.error(err);
+      saveStatus.textContent = 'Error: ' + err.message;
+      saveStatus.className = 'save-status err';
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  // ---- Settings: profile, bio, stats, hero/logo photos ----
+  async function loadSiteContent(){
+    const { data, error } = await supabase.from('site_content').select('*').eq('id', 1).single();
+    if (error || !data) return;
+    document.getElementById('setPhone').value = data.phone || '';
+    document.getElementById('setBioLead').value = data.bio_lead || '';
+    document.getElementById('setBioBody1').value = data.bio_body1 || '';
+    document.getElementById('setBioBody2').value = data.bio_body2 || '';
+    document.getElementById('stat1Num').value = data.stat1_num || '';
+    document.getElementById('stat1Label').value = data.stat1_label || '';
+    document.getElementById('stat2Num').value = data.stat2_num || '';
+    document.getElementById('stat2Label').value = data.stat2_label || '';
+    document.getElementById('stat3Num').value = data.stat3_num || '';
+    document.getElementById('stat3Label').value = data.stat3_label || '';
+  }
+
+  async function uploadIfPresent(inputId, folder){
+    const input = document.getElementById(inputId);
+    if (!input.files || !input.files[0]) return null;
+    const file = input.files[0];
+    console.log(`Uploading ${inputId}:`, { name: file.name, size: file.size, type: file.type });
+    const path = `${folder}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g,'_')}`;
+    const { error } = await supabase.storage.from('property-photos').upload(path, file, {
+      upsert: true,
+      contentType: file.type || 'application/octet-stream',
+    });
+    if (error) {
+      console.error(`Photo upload failed for ${inputId}:`, error);
+      throw new Error(`Photo upload (${inputId}) failed: ${error.message || JSON.stringify(error)}`);
+    }
+    const { data } = supabase.storage.from('property-photos').getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+  document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('settingsSaveStatus');
+    const btn = document.getElementById('settingsSaveBtn');
+    btn.disabled = true;
+    status.textContent = 'Saving…';
+    status.className = 'save-status';
+
+    try {
+      const heroUrl = await uploadIfPresent('setHeroPhoto', 'site');
+      const logoUrl = await uploadIfPresent('setLogo', 'site');
+
+      const payload = {
+        id: 1,
+        phone: document.getElementById('setPhone').value.trim() || null,
+        bio_lead: document.getElementById('setBioLead').value.trim() || null,
+        bio_body1: document.getElementById('setBioBody1').value.trim() || null,
+        bio_body2: document.getElementById('setBioBody2').value.trim() || null,
+        stat1_num: document.getElementById('stat1Num').value.trim() || null,
+        stat1_label: document.getElementById('stat1Label').value.trim() || null,
+        stat2_num: document.getElementById('stat2Num').value.trim() || null,
+        stat2_label: document.getElementById('stat2Label').value.trim() || null,
+        stat3_num: document.getElementById('stat3Num').value.trim() || null,
+        stat3_label: document.getElementById('stat3Label').value.trim() || null,
+        updated_at: new Date().toISOString(),
+      };
+      if (heroUrl) payload.hero_photo_url = heroUrl;
+      if (logoUrl) payload.logo_url = logoUrl;
+
+      const { error } = await supabase.from('site_content').upsert(payload);
+      if (error) {
+        console.error('Site content database save failed:', error);
+        throw new Error(`Database save failed: ${error.message} ${error.details || ''} ${error.hint || ''}`.trim());
+      }
+
+      status.textContent = 'Saved. Changes will show next time the site loads.';
+      status.className = 'save-status ok';
+      document.getElementById('setHeroPhoto').value = '';
+      document.getElementById('setLogo').value = '';
+    } catch (err){
+      console.error('Settings save failed — full error object:', err);
+      const parts = [err.message, err.details, err.hint, err.code].filter(Boolean);
+      status.textContent = 'Error: ' + (parts.join(' | ') || JSON.stringify(err));
+      status.className = 'save-status err';
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // ---- Testimonials CRUD ----
+  let testiEditingId = null;
+
+  function resetTestiForm(){
+    testiEditingId = null;
+    document.getElementById('testiForm').reset();
+    document.getElementById('testiEditId').value = '';
+    document.getElementById('testiSaveBtn').textContent = 'Save testimonial';
+    document.getElementById('testiCancelBtn').style.display = 'none';
+  }
+  document.getElementById('testiCancelBtn').addEventListener('click', resetTestiForm);
+
+  async function loadTestimonials(){
+    const container = document.getElementById('testiListContainer');
+    container.innerHTML = '<p class="empty">Loading…</p>';
+    const { data, error } = await supabase
+      .from('testimonials').select('*')
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (error){
+      container.innerHTML = `<p class="empty">Couldn't load testimonials: ${error.message}</p>`;
+      return;
+    }
+    if (!data.length){
+      container.innerHTML = '<p class="empty">No testimonials yet — add one above.</p>';
+      return;
+    }
+    container.innerHTML = data.map(t => `
+      <div class="list-item">
+        <div class="info">
+          <div class="addr">${t.who}</div>
+          <div class="meta">${t.quote}</div>
+        </div>
+        <div class="actions">
+          <button class="btn-small" data-tedit="${t.id}">Edit</button>
+          <button class="btn-danger" data-tdelete="${t.id}">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('[data-tedit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const t = data.find(d => d.id === btn.dataset.tedit);
+        testiEditingId = t.id;
+        document.getElementById('testiEditId').value = t.id;
+        document.getElementById('testiQuote').value = t.quote;
+        document.getElementById('testiWho').value = t.who;
+        document.getElementById('testiSaveBtn').textContent = 'Update testimonial';
+        document.getElementById('testiCancelBtn').style.display = 'inline-block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+    container.querySelectorAll('[data-tdelete]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this testimonial?')) return;
+        const { error } = await supabase.from('testimonials').delete().eq('id', btn.dataset.tdelete);
+        if (error){ alert('Delete failed: ' + error.message); return; }
+        loadTestimonials();
+      });
+    });
+  }
+
+  document.getElementById('testiForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('testiSaveStatus');
+    const btn = document.getElementById('testiSaveBtn');
+    btn.disabled = true;
+    status.textContent = 'Saving…';
+    status.className = 'save-status';
+
+    try {
+      const payload = {
+        quote: document.getElementById('testiQuote').value.trim(),
+        who: document.getElementById('testiWho').value.trim(),
+      };
+      let error;
+      if (testiEditingId){
+        ({ error } = await supabase.from('testimonials').update(payload).eq('id', testiEditingId));
+      } else {
+        ({ error } = await supabase.from('testimonials').insert(payload));
+      }
+      if (error) throw error;
+
+      status.textContent = 'Saved.';
+      status.className = 'save-status ok';
+      resetTestiForm();
+      loadTestimonials();
+    } catch (err){
+      console.error(err);
+      status.textContent = 'Error: ' + err.message;
+      status.className = 'save-status err';
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  checkSession();
+</script>
+</body>
+</html>

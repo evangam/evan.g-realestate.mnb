@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evan Gamkrelidze — Mosman &amp; Lower North Shore</title>
+<meta name="description" content="Evan Gamkrelidze — a decade selling Mosman and the Lower North Shore. Current listings, sold results, and client record.">
+
+<!-- ============================================================
+  ANALYTICS — replace before going live
+  1) Google Analytics 4: swap G-XXXXXXXXXX below for your GA4 ID
+  2) Vercel Analytics: enable "Web Analytics" in the Vercel project
+     dashboard once deployed — the script tag below activates on its own.
+============================================================= -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#FAFAF8;
+    --bg-elev:#FFFFFF;
+    --bg-elev-2:#F1F0EC;
+    --ink:#17171A;
+    --ink-mid:#5A5A57;
+    --ink-low:#8C8C88;
+    --gold:#FFB300;
+    --gold-soft:#B8790A;
+    --line:rgba(0,0,0,0.08);
+    --line-strong:rgba(0,0,0,0.13);
+    --r-lg:22px;
+    --r-md:14px;
+    --r-full:999px;
+    --max:1200px;
+    --shadow:0 20px 44px -22px rgba(23,23,26,0.22);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Inter',sans-serif;font-size:16px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:500;margin:0;letter-spacing:-0.015em;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 40px;}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;
+    text-transform:uppercase;color:var(--gold-soft);font-weight:500;
+  }
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,250,248,0.78);backdrop-filter:blur(14px) saturate(140%);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;max-width:var(--max);margin:0 auto;}
+  .nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;}
+  .nav-logo{height:auto;max-height:40px;width:auto;max-width:200px;display:block;border-radius:8px;}
+  .nav-name{font-family:'Fraunces',serif;font-size:18px;font-weight:500;}
+  .nav-name span{color:var(--gold-soft);}
+  .nav-links{display:flex;gap:32px;list-style:none;margin:0;padding:0;font-size:14px;}
+  .nav-links a{text-decoration:none;color:var(--ink-mid);transition:color .2s;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-cta{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;
+    background:var(--gold);color:#171100;
+    padding:11px 20px;border-radius:var(--r-full);text-decoration:none;white-space:nowrap;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(255,179,0,0.5);}
+  @media(max-width:860px){.nav-links{display:none;}.wrap{padding:0 22px;}.nav{padding:16px 22px;}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:110px 0 100px;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:72px;align-items:center;}
+  .hero h1{font-size:clamp(38px,5.2vw,64px);line-height:1.06;font-weight:400;}
+  .hero h1 em{font-style:italic;color:var(--gold-soft);font-weight:500;}
+  .hero p.lede{color:var(--ink-mid);font-size:18px;max-width:44ch;margin-top:24px;line-height:1.6;}
+  .hero-actions{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;}
+  .btn-primary,.btn-ghost{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;
+    padding:15px 26px;border-radius:var(--r-full);text-decoration:none;display:inline-block;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s, border-color .2s;
+  }
+  .btn-primary{background:var(--gold);color:#171100;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(255,179,0,0.55);}
+  .btn-ghost{border:1px solid var(--line-strong);color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--gold-soft);color:var(--gold-soft);transform:translateY(-2px);}
+
+  .hero-photo{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);}
+  .hero-photo img{width:100%;height:460px;object-fit:cover;object-position:top center;}
+  .hero-photo-badge{
+    position:absolute;bottom:18px;left:18px;
+    background:rgba(13,13,14,0.75);backdrop-filter:blur(8px);
+    border:1px solid var(--line-strong);border-radius:var(--r-full);
+    padding:9px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--ink);
+  }
+  @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px;}.hero{padding:70px 0 60px;}.hero-photo img{height:340px;}}
+
+  /* ---------- Proof strip (sold carousel) ---------- */
+  .proof{padding:8px 0 100px;overflow:hidden;}
+  .proof-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;flex-wrap:wrap;gap:10px;}
+  .proof-head h3{font-size:15px;color:var(--ink-mid);font-weight:500;font-family:'Inter',sans-serif;}
+  .proof-track-wrap{position:relative;}
+  .proof-track-wrap::before,.proof-track-wrap::after{
+    content:"";position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;
+  }
+  .proof-track-wrap::before{left:0;background:linear-gradient(90deg,var(--bg),transparent);}
+  .proof-track-wrap::after{right:0;background:linear-gradient(270deg,var(--bg),transparent);}
+  .proof-track{display:flex;gap:20px;width:max-content;animation:slide 48s linear infinite;}
+  .proof-track-wrap:hover .proof-track{animation-play-state:paused;}
+  .proof-card{
+    width:240px;flex:0 0 auto;background:var(--bg-elev);border-radius:var(--r-md);
+    overflow:hidden;border:1px solid var(--line);
+  }
+  .proof-card img{width:100%;height:150px;object-fit:cover;}
+  .proof-card-body{padding:16px 18px;}
+  .proof-card .status{font-size:10.5px;color:var(--gold-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;}
+  .proof-card .addr{font-size:14px;margin-top:8px;color:var(--ink);line-height:1.4;}
+  .proof-card .price{font-family:'Fraunces',serif;font-size:20px;margin-top:10px;color:var(--ink);}
+  @keyframes slide{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  @media(prefers-reduced-motion:reduce){.proof-track{animation:none;overflow-x:auto;}}
+
+  /* ---------- Sections generic ---------- */
+  section{padding:100px 0;}
+  section + section{border-top:1px solid var(--line);}
+  .section-head{max-width:620px;margin-bottom:52px;}
+  .section-head h2{font-size:clamp(28px,3.6vw,40px);margin-top:14px;font-weight:400;}
+  .section-head p{color:var(--ink-mid);margin-top:16px;font-size:16.5px;}
+
+  /* ---------- About ---------- */
+  .about-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:72px;}
+  .about-grid p{color:var(--ink-mid);font-size:16.5px;margin:0 0 20px;}
+  .about-grid p.lead{color:var(--ink);font-size:21px;font-family:'Fraunces',serif;font-weight:400;line-height:1.5;}
+  .stat-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  .stat-card{
+    background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-md);
+    padding:24px 26px;display:flex;justify-content:space-between;align-items:center;
+  }
+  .stat-card .num{font-family:'Fraunces',serif;font-size:32px;color:var(--gold-soft);font-weight:400;}
+  .stat-card .label{font-size:13px;color:var(--ink-mid);text-align:right;max-width:12ch;line-height:1.4;}
+  @media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:36px;}}
+
+  /* ---------- Property cards ---------- */
+  .prop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .prop-card{
+    background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-lg);
+    overflow:hidden;transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  .prop-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--line-strong);}
+  .prop-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;position:relative;background:var(--bg-elev-2);}
+  .prop-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
+  .prop-card:hover .prop-img-wrap img{transform:scale(1.06);}
+  .prop-tag{
+    position:absolute;top:14px;left:14px;
+    font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.02em;
+    background:rgba(13,13,14,0.78);backdrop-filter:blur(6px);color:var(--gold);
+    padding:6px 12px;border-radius:var(--r-full);border:1px solid rgba(255,179,0,0.35);
+  }
+  .prop-tag.sold{color:var(--ink);border-color:var(--line-strong);}
+  .prop-body{padding:22px 24px 26px;}
+  .prop-addr{font-family:'Fraunces',serif;font-size:19px;line-height:1.35;font-weight:400;}
+  .prop-price{font-size:14.5px;color:var(--ink-mid);margin-top:10px;}
+  .prop-price strong{color:var(--ink);font-weight:600;}
+  .prop-meta{display:flex;gap:14px;margin-top:14px;font-size:13px;color:var(--ink-low);}
+  @media(max-width:900px){.prop-grid{grid-template-columns:1fr;}}
+  @media(min-width:901px) and (max-width:1180px){.prop-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---------- Testimonials ---------- */
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .testi-card{
+    background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:32px 28px;display:flex;flex-direction:column;gap:18px;
+  }
+  .testi-card .mark{font-family:'Fraunces',serif;font-size:44px;color:var(--gold);line-height:0.4;}
+  .testi-card p{color:var(--ink-mid);font-size:15.5px;margin:0;flex:1;}
+  .testi-who{display:flex;align-items:center;gap:12px;}
+  .testi-avatar{
+    width:36px;height:36px;border-radius:50%;background:var(--bg-elev-2);border:1px solid var(--line-strong);
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:14px;color:var(--gold-soft);
+  }
+  .testi-who .who{font-size:13px;color:var(--ink);font-weight:500;}
+  @media(max-width:900px){.testi-grid{grid-template-columns:1fr;}}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:72px;}
+  .contact-info p{color:var(--ink-mid);font-size:16.5px;}
+  .contact-detail{margin-top:30px;}
+  .contact-detail .eyebrow{display:block;margin-bottom:8px;}
+  .contact-detail a{text-decoration:none;font-family:'Fraunces',serif;font-size:22px;color:var(--ink);transition:color .2s;}
+  .contact-detail a:hover{color:var(--gold-soft);}
+
+  .contact-card{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-lg);padding:36px;}
+  form{display:flex;flex-direction:column;gap:20px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  label{font-size:12.5px;color:var(--ink-mid);margin-bottom:8px;display:block;font-weight:500;}
+  input,textarea{
+    width:100%;background:var(--bg-elev-2);border:1px solid var(--line-strong);
+    border-radius:var(--r-md);color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;
+    padding:13px 15px;transition:border-color .2s;
+  }
+  input:focus,textarea:focus{border-color:var(--gold-soft);}
+  textarea{resize:vertical;min-height:110px;}
+  .submit-btn{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;background:var(--gold);color:#171100;
+    border:none;padding:16px 26px;border-radius:var(--r-full);cursor:pointer;align-self:flex-start;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .submit-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(255,179,0,0.55);}
+  .submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
+  .form-status{font-size:13.5px;min-height:18px;}
+  .form-status.ok{color:#8FD19E;}
+  .form-status.err{color:#E38B8B;}
+  @media(max-width:900px){.contact-grid{grid-template-columns:1fr;gap:36px;}.form-row{grid-template-columns:1fr;}.contact-card{padding:24px;}}
+
+  /* ---------- Footer ---------- */
+  footer{padding:44px 0;border-top:1px solid var(--line);}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .foot-row p{color:var(--ink-low);font-size:13px;margin:0;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="#" class="nav-brand">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgdmlld0JveD0iMCAwIDQ0IDQ0Ij4KICA8Y2lyY2xlIGN4PSIyMiIgY3k9IjIyIiByPSIyMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZCMzAwIiBzdHJva2Utd2lkdGg9IjEuMiIvPgogIDx0ZXh0IHg9IjIyIiB5PSIyOSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjRkZCMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPC9zdmc+Cg==" alt="Evan Gamkrelidze logo" id="navLogo" class="nav-logo" onerror="this.style.display='none'">
+      <!-- If your logo image already includes your name, delete the span below. -->
+      <span class="nav-name">Evan Gamkrelidze <span>&mdash; Mosman</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#listings">Listings</a></li>
+      <li><a href="#sold">Sold</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="nav-cta" id="navPhone" href="tel:0402466066">0402 466 066</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Sales Agent — Mosman / Neutral Bay / Lower North Shore</span>
+      <h1 style="margin-top:20px;">A decade in one <em>harbour</em>, every result on the record.</h1>
+      <p class="lede">I sell prestige homes and apartments across Mosman and the Lower North Shore — nowhere else, on purpose. Depth of local knowledge beats a wide territory every time a vendor needs a number they can trust.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#contact">Request an appraisal</a>
+        <a class="btn-ghost" href="#listings">View current listings</a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <img id="heroPhoto" src="https://d2hqr1s9kfm9jo.cloudfront.net/production/images/sales_agents/21244/Evan_gemini.profile.jpg" alt="Evan Gamkrelidze, Sales Agent, Mosman and the Lower North Shore">
+      <div class="hero-photo-badge">Mosman, NSW 2088</div>
+    </div>
+  </div>
+</section>
+
+<div class="proof">
+  <div class="wrap">
+    <div class="proof-head">
+      <h3>Recently sold across Mosman &amp; the Lower North Shore</h3>
+    </div>
+  </div>
+  <div class="proof-track-wrap">
+    <div class="proof-track" id="proofTrack"></div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <span class="eyebrow">About</span>
+      <div class="stat-grid" style="margin-top:24px;">
+        <div class="stat-card"><span class="num" id="stat1Num">10</span><span class="label" id="stat1Label">Years, Lower North Shore</span></div>
+        <div class="stat-card"><span class="num" id="stat2Num">$5.5M</span><span class="label" id="stat2Label">Highest recorded sale, disclosed</span></div>
+        <div class="stat-card"><span class="num" id="stat3Num">6</span><span class="label" id="stat3Label">Client testimonials on record</span></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <p class="lead" id="bioLead">Ten years running, I've been the name Mosman and the Lower North Shore turn to for record-breaking results on their most valuable asset.</p>
+      <p id="bioBody1">I've sat across the table from first-home buyers nervous about their biggest decision, and from vendors leaving homes their families held for decades. The job doesn't change: tell people the truth early, market harder than the market expects, and land on a price that holds up under scrutiny — from the buyer, the bank, and the vendor's own second-guessing.</p>
+      <p id="bioBody2">Backed by Raine &amp; Horne's Mosman office — the leading sales agency on the Lower North Shore — I pair meticulous attention to detail with a strategic, technology-led approach to marketing, so every listing gets a genuine competitive advantage, not just a spot online.</p>
+      <a class="btn-ghost" href="#contact" style="margin-top:8px;">Get in touch</a>
+    </div>
+  </div>
+</section>
+
+<section id="listings">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Currently listed</span>
+      <h2>On the market now</h2>
+      <p>Live listings across Mosman. Contact me directly for inspection times or an off-market conversation.</p>
+    </div>
+    <div class="prop-grid" id="listingsGrid"></div>
+  </div>
+</section>
+
+<section id="sold">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Recently sold</span>
+      <h2>Results on the record</h2>
+      <p>A sample of recent sales across Mosman, Neutral Bay and the Lower North Shore.</p>
+    </div>
+    <div class="prop-grid" id="soldGrid"></div>
+  </div>
+</section>
+
+<section id="testimonials">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">In their words</span>
+      <h2>What clients say after settlement</h2>
+    </div>
+    <div class="testi-grid" id="testiGrid"></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap contact-grid">
+    <div class="contact-info reveal">
+      <span class="eyebrow">Get in touch</span>
+      <h2 style="margin-top:14px;font-size:clamp(28px,3.6vw,40px);font-weight:400;">Thinking of selling, or just want a straight answer?</h2>
+      <p style="margin-top:18px;">Leave your details and I'll come back to you directly — no call centre, no hand-off.</p>
+      <div class="contact-detail">
+        <span class="eyebrow">Call</span>
+        <a href="tel:0402466066" id="contactPhone">0402 466 066</a>
+      </div>
+      <div class="contact-detail">
+        <span class="eyebrow">Area</span>
+        <a href="#" style="cursor:default;">Mosman · Neutral Bay · Lower North Shore</a>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="contact-card">
+        <form id="leadForm">
+          <div class="form-row">
+            <div>
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone">
+            </div>
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div>
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Tell me a bit about what you're after — buying, selling, or just an appraisal."></textarea>
+          </div>
+          <button type="submit" class="submit-btn" id="submitBtn">Send enquiry</button>
+          <p class="form-status" id="formStatus"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <p>&copy; <span id="yr"></span> Evan Gamkrelidze — Independently operated marketing site.</p>
+    <p>Mosman, NSW 2088</p>
+  </div>
+</footer>
+
+<!-- ============================================================
+  SUPABASE — one shared client powers three things on this page:
+  1) Live listings + sold results (falls back to demo data below
+     until you've added real rows via admin.html)
+  2) The contact form, which writes into "leads" for Touch Point
+  Fill these in from Project Settings → API (same project as
+  Touch Point and admin.html). Run supabase-schema.sql once first.
+============================================================= -->
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://mmznrgyqmcwgcbojfzkg.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tem5yZ3lxbWN3Z2Nib2pmemtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4OTkxODMsImV4cCI6MjA5ODQ3NTE4M30.RzOySFa1BIB93FdBLS6PlrQltWyGPpqXqUYeHosCGDo';
+  const isConfigured = !SUPABASE_URL.includes('YOUR-PROJECT');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  const PLACEHOLDER_IMG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgdmlld0JveD0iMCAwIDQ0IDQ0Ij4KICA8Y2lyY2xlIGN4PSIyMiIgY3k9IjIyIiByPSIyMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZCMzAwIiBzdHJva2Utd2lkdGg9IjEuMiIvPgogIDx0ZXh0IHg9IjIyIiB5PSIyOSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjRkZCMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPC9zdmc+Cg==";
+
+  // ---- Fallback demo data — shown until Supabase has real rows ----
+  const fallbackListings = [
+    { addr: "4/163 Avenue Road, Mosman NSW 2088", status: "Auction", beds: 2, baths: 1, cars: 0, img: PLACEHOLDER_IMG },
+    { addr: "2/5-9 Clifford Street, Mosman NSW 2088", status: "Auction", beds: 2, baths: 2, cars: 1, img: PLACEHOLDER_IMG },
+    { addr: "101/171-179 Avenue Road, Mosman NSW 2088", status: "Auction", beds: 2, baths: 2, cars: 2, img: PLACEHOLDER_IMG },
+    { addr: "3/14 Clifford Street, Mosman NSW 2088", status: "For Sale", beds: 2, baths: 1, cars: 1, img: PLACEHOLDER_IMG },
+    { addr: "12 Orlando Avenue, Mosman NSW 2088", status: "For Sale", beds: 2, baths: 1, cars: 1, img: PLACEHOLDER_IMG },
+  ];
+
+  const fallbackSold = [
+    { addr: "77 Macpherson Street, Mosman NSW 2088", status: "Sold", price: "$5,500,000", type: "House", img: PLACEHOLDER_IMG },
+    { addr: "37 Bond Street, Mosman NSW 2088", status: "Sold", price: "$3,820,000", type: "House", img: PLACEHOLDER_IMG },
+    { addr: "106 Avenue Road, Mosman NSW 2088", status: "Sold", price: "$3,550,000", type: "House", img: PLACEHOLDER_IMG },
+    { addr: "103 Shadforth Street, Mosman NSW 2088", status: "Auctioned", price: "$2,720,000", type: "House", img: PLACEHOLDER_IMG },
+    { addr: "24/18 Cranbrook Avenue, Cremorne NSW 2090", status: "Sold", price: "$1,900,000", type: "Apartment", img: PLACEHOLDER_IMG },
+    { addr: "17/26 Raglan Street, Mosman NSW 2088", status: "Sold", price: "$1,700,000", type: "Apartment", img: PLACEHOLDER_IMG },
+    { addr: "45/6-12 Prospect Avenue, Cremorne NSW 2090", status: "Sold", price: "$1,665,000", type: "Apartment", img: PLACEHOLDER_IMG },
+    { addr: "2/1 Queen Street, Mosman NSW 2088", status: "Sold", price: "$1,475,000", type: "Apartment", img: PLACEHOLDER_IMG },
+  ];
+
+  const testimonials = [
+    { quote: "Evan made our first home purchase stress-free — honest, responsive, and clearly the local expert. We love our new home.", who: "Katie, Purchaser" },
+    { quote: "Evan understood my situation from day one and stayed true to his word years later. Sharp market read, real integrity.", who: "Caroline, Vendor" },
+    { quote: "Selling for the first time, we never once felt pressured. Evan was responsive, genuine, and delivered a stellar result.", who: "Alex, Vendor" },
+    { quote: "Evan sold my unit with sharp market knowledge and constant updates. I'd use him again without hesitation.", who: "Anastasia, Vendor" },
+    { quote: "Across several sales with different agents, Evan stands apart — honest, communicative, and genuinely dedicated to the outcome.", who: "Vicky, Vendor" },
+    { quote: "Evan made a stressful sale simple, answered every question with patience, and went well beyond what we expected.", who: "Ann, Vendor" },
+  ];
+
+  function metaLine(p){
+    const parts = [];
+    if (p.beds != null) parts.push(`${p.beds} bed`);
+    if (p.baths != null) parts.push(`${p.baths} bath`);
+    if (p.cars) parts.push(`${p.cars} car`);
+    if (parts.length) return parts.join(' · ');
+    return p.type || '';
+  }
+
+  function normalize(row){
+    return {
+      addr: row.address,
+      status: row.status,
+      price: row.price_disclosed ? row.price : null,
+      type: row.property_type,
+      beds: row.beds,
+      baths: row.baths,
+      cars: row.cars,
+      img: row.image_url || PLACEHOLDER_IMG,
+    };
+  }
+
+  async function fetchCategory(category, fallback){
+    if (!isConfigured) return fallback;
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('category', category)
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: false });
+      if (error || !data || !data.length) return fallback;
+      return data.map(normalize);
+    } catch (err) {
+      console.warn('Falling back to demo listings:', err);
+      return fallback;
+    }
+  }
+
+  function renderListings(listings){
+    document.getElementById('listingsGrid').innerHTML = listings.map(p => `
+      <div class="prop-card">
+        <div class="prop-img-wrap">
+          <img src="${p.img}" alt="${p.addr}" loading="lazy">
+          <span class="prop-tag">${p.status}</span>
+        </div>
+        <div class="prop-body">
+          <div class="prop-addr">${p.addr}</div>
+          <div class="prop-price">Contact agent</div>
+          <div class="prop-meta">${metaLine(p)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderSold(sold){
+    document.getElementById('soldGrid').innerHTML = sold.map(p => `
+      <div class="prop-card">
+        <div class="prop-img-wrap">
+          <img src="${p.img}" alt="${p.addr}" loading="lazy">
+          <span class="prop-tag sold">${p.status}</span>
+        </div>
+        <div class="prop-body">
+          <div class="prop-addr">${p.addr}</div>
+          <div class="prop-price">${p.price ? `Sold for <strong>${p.price}</strong>` : 'Price undisclosed'}</div>
+          <div class="prop-meta">${metaLine(p)}</div>
+        </div>
+      </div>
+    `).join('');
+
+    const proofItems = sold.map(p => `
+      <div class="proof-card">
+        <img src="${p.img}" alt="${p.addr}" loading="lazy">
+        <div class="proof-card-body">
+          <div class="status">${p.status}</div>
+          <div class="addr">${p.addr}</div>
+          ${p.price ? `<div class="price">${p.price}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('proofTrack').innerHTML = proofItems + proofItems;
+  }
+
+  async function loadSiteContent(){
+    if (!isConfigured) return;
+    try {
+      const { data, error } = await supabase.from('site_content').select('*').eq('id', 1).single();
+      if (error || !data) return;
+      if (data.phone){
+        const digits = data.phone.replace(/[^\d+]/g, '');
+        document.getElementById('navPhone').textContent = data.phone;
+        document.getElementById('navPhone').href = `tel:${digits}`;
+        document.getElementById('contactPhone').textContent = data.phone;
+        document.getElementById('contactPhone').href = `tel:${digits}`;
+      }
+      if (data.hero_photo_url) document.getElementById('heroPhoto').src = data.hero_photo_url;
+      if (data.logo_url) document.getElementById('navLogo').src = data.logo_url;
+      if (data.bio_lead) document.getElementById('bioLead').textContent = data.bio_lead;
+      if (data.bio_body1) document.getElementById('bioBody1').textContent = data.bio_body1;
+      if (data.bio_body2) document.getElementById('bioBody2').textContent = data.bio_body2;
+      if (data.stat1_num) document.getElementById('stat1Num').textContent = data.stat1_num;
+      if (data.stat1_label) document.getElementById('stat1Label').textContent = data.stat1_label;
+      if (data.stat2_num) document.getElementById('stat2Num').textContent = data.stat2_num;
+      if (data.stat2_label) document.getElementById('stat2Label').textContent = data.stat2_label;
+      if (data.stat3_num) document.getElementById('stat3Num').textContent = data.stat3_num;
+      if (data.stat3_label) document.getElementById('stat3Label').textContent = data.stat3_label;
+    } catch (err) {
+      console.warn('Site content fetch failed, keeping defaults:', err);
+    }
+  }
+
+  async function loadTestimonials(){
+    let list = testimonials;
+    if (isConfigured){
+      try {
+        const { data, error } = await supabase
+          .from('testimonials').select('*')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length) list = data;
+      } catch (err) {
+        console.warn('Testimonials fetch failed, keeping defaults:', err);
+      }
+    }
+    document.getElementById('testiGrid').innerHTML = list.map(t => `
+      <div class="testi-card">
+        <span class="mark">&ldquo;</span>
+        <p>${t.quote}</p>
+        <div class="testi-who">
+          <div class="testi-avatar">${t.who.charAt(0)}</div>
+          <div class="who">${t.who}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  loadSiteContent();
+  loadTestimonials();
+
+  (async () => {
+    const [listings, sold] = await Promise.all([
+      fetchCategory('current', fallbackListings),
+      fetchCategory('sold', fallbackSold),
+    ]);
+    renderListings(listings);
+    renderSold(sold);
+  })();
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ---- Contact form → leads table ----
+  const form = document.getElementById('leadForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const formStatus = document.getElementById('formStatus');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    formStatus.textContent = 'Sending…';
+    formStatus.className = 'form-status';
+
+    const payload = {
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      message: form.message.value.trim(),
+      source: 'website'
+    };
+
+    try {
+      const { error } = await supabase.from('leads').insert(payload);
+      if (error) throw error;
+      formStatus.textContent = 'Thanks — I\'ll be in touch shortly.';
+      formStatus.className = 'form-status ok';
+      form.reset();
+      if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'website_form' });
+    } catch (err) {
+      console.error('Lead submit failed:', err);
+      formStatus.textContent = 'Something went wrong — email me directly at the number above.';
+      formStatus.className = 'form-status err';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
