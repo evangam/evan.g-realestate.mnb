@@ -115,6 +115,7 @@
                 <option>For Sale</option>
                 <option>Auction</option>
                 <option>Sold</option>
+                <option>Sold via Private Treaty</option>
                 <option>Sold Prior to Auction</option>
                 <option>Auctioned</option>
               </select>
@@ -177,7 +178,11 @@
             </div>
             <div></div>
             <div class="full">
-              <label for="setHeroPhoto">Hero / profile photo</label>
+              <label for="setHeroBg">Hero background photo (full-width — a location or aerial shot works well)</label>
+              <input type="file" id="setHeroBg" accept="image/*">
+            </div>
+            <div class="full">
+              <label for="setHeroPhoto">Profile photo (small circle badge over the hero)</label>
               <input type="file" id="setHeroPhoto" accept="image/*">
             </div>
             <div class="full">
@@ -189,7 +194,7 @@
           <h2 style="margin-top:8px;">Bio</h2>
           <div class="form-grid">
             <div class="full">
-              <label for="setBioLead">Opening line (large text)</label>
+              <label for="setBioLead">Opening line (large text) — wrap a word in *asterisks* to highlight it in gold, e.g. "a decade of *trust*"</label>
               <textarea id="setBioLead" rows="2"></textarea>
             </div>
             <div class="full">
@@ -499,6 +504,7 @@
     status.className = 'save-status';
 
     try {
+      const heroBgUrl = await uploadIfPresent('setHeroBg', 'site');
       const heroUrl = await uploadIfPresent('setHeroPhoto', 'site');
       const logoUrl = await uploadIfPresent('setLogo', 'site');
 
@@ -516,6 +522,7 @@
         stat3_label: document.getElementById('stat3Label').value.trim() || null,
         updated_at: new Date().toISOString(),
       };
+      if (heroBgUrl) payload.hero_bg_url = heroBgUrl;
       if (heroUrl) payload.hero_photo_url = heroUrl;
       if (logoUrl) payload.logo_url = logoUrl;
 
@@ -527,6 +534,7 @@
 
       status.textContent = 'Saved. Changes will show next time the site loads.';
       status.className = 'save-status ok';
+      document.getElementById('setHeroBg').value = '';
       document.getElementById('setHeroPhoto').value = '';
       document.getElementById('setLogo').value = '';
     } catch (err){
