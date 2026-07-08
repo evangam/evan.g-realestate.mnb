@@ -163,7 +163,9 @@
   .proof-track-wrap::before{left:0;background:linear-gradient(90deg,var(--bg),transparent);}
   .proof-track-wrap::after{right:0;background:linear-gradient(270deg,var(--bg),transparent);}
   .proof-track{display:flex;gap:20px;width:max-content;animation:slide 48s linear infinite;}
-  .proof-track-wrap:hover .proof-track{animation-play-state:paused;}
+  @media (hover: hover) and (pointer: fine){
+    .proof-track-wrap:hover .proof-track{animation-play-state:paused;}
+  }
   .proof-card{
     display:block;text-decoration:none;color:inherit;
     width:200px;flex:0 0 auto;background:var(--bg-elev);border-radius:var(--r-md);
