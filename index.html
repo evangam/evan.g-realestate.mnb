@@ -217,6 +217,26 @@
   a.prop-card{cursor:pointer;}
   .prop-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--line-strong);}
   .prop-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;position:relative;background:var(--bg-elev-2);}
+  .gallery-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+    width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;
+    background:rgba(13,13,14,0.55);color:#fff;font-size:18px;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:opacity .2s ease, background .2s ease;
+  }
+  .prop-img-wrap:hover .gallery-arrow{opacity:1;}
+  .gallery-arrow:hover{background:rgba(13,13,14,0.8);}
+  .gallery-arrow.prev{left:10px;}
+  .gallery-arrow.next{right:10px;}
+  .gallery-dots{
+    position:absolute;bottom:10px;left:0;right:0;z-index:2;
+    display:flex;justify-content:center;gap:6px;
+  }
+  .gallery-dots .dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);transition:background .2s ease, transform .2s ease;}
+  .gallery-dots .dot.active{background:#fff;transform:scale(1.3);}
+  @media (hover: none) and (pointer: coarse){
+    .gallery-arrow{opacity:1;background:rgba(13,13,14,0.4);}
+  }
   .prop-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
   .prop-card:hover .prop-img-wrap img{transform:scale(1.06);}
   .prop-tag{
@@ -512,6 +532,8 @@
     { addr: "45/6-12 Prospect Avenue, Cremorne NSW 2090", status: "Sold", price: "$1,665,000", type: "Apartment", img: PLACEHOLDER_IMG },
     { addr: "2/1 Queen Street, Mosman NSW 2088", status: "Sold", price: "$1,475,000", type: "Apartment", img: PLACEHOLDER_IMG },
   ];
+  fallbackListings.forEach(p => { if (!p.photos) p.photos = [p.img]; });
+  fallbackSold.forEach(p => { if (!p.photos) p.photos = [p.img]; });
 
   const testimonials = [
     { quote: "Evan made our first home purchase stress-free — honest, responsive, and clearly the local expert. We love our new home.", who: "Katie, Purchaser" },
@@ -533,6 +555,9 @@
   }
 
   function normalize(row){
+    const gallery = Array.isArray(row.images) ? row.images.filter(Boolean) : [];
+    const cover = row.image_url || null;
+    const photos = [cover, ...gallery].filter(Boolean);
     return {
       addr: row.address,
       status: row.status,
@@ -542,7 +567,8 @@
       baths: row.baths,
       cars: row.cars,
       sqm: row.sqm,
-      img: row.image_url || PLACEHOLDER_IMG,
+      img: cover || PLACEHOLDER_IMG,
+      photos: photos.length ? photos : [PLACEHOLDER_IMG],
       url: row.listing_url || null,
     };
   }
@@ -573,12 +599,56 @@
     }
   }
 
+  function galleryMarkup(p){
+    if (p.photos.length <= 1) return '';
+    return `
+      <button type="button" class="gallery-arrow prev" data-dir="-1" aria-label="Previous photo">&#8249;</button>
+      <button type="button" class="gallery-arrow next" data-dir="1" aria-label="Next photo">&#8250;</button>
+      <div class="gallery-dots">${p.photos.map((_, i) => `<span class="dot${i === 0 ? ' active' : ''}"></span>`).join('')}</div>
+    `;
+  }
+
+  function wireGalleries(gridId, items){
+    const wraps = document.querySelectorAll(`#${gridId} .prop-img-wrap`);
+    wraps.forEach((wrap, i) => {
+      const photos = items[i].photos;
+      if (photos.length <= 1) return;
+      let idx = 0;
+      const img = wrap.querySelector('img');
+      const dots = wrap.querySelectorAll('.dot');
+
+      function show(newIdx){
+        idx = (newIdx + photos.length) % photos.length;
+        img.src = photos[idx];
+        dots.forEach((d, di) => d.classList.toggle('active', di === idx));
+      }
+
+      wrap.querySelectorAll('.gallery-arrow').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          show(idx + Number(btn.dataset.dir));
+        });
+      });
+
+      let touchStartX = null;
+      wrap.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+      wrap.addEventListener('touchend', (e) => {
+        if (touchStartX === null) return;
+        const delta = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(delta) > 40) show(idx + (delta < 0 ? 1 : -1));
+        touchStartX = null;
+      });
+    });
+  }
+
   function renderListings(listings){
     document.getElementById('listingsGrid').innerHTML = listings.map(p => `
       ${cardOpenTag(p)}
         <div class="prop-img-wrap">
           <img src="${p.img}" alt="${p.addr}" loading="lazy">
           <span class="prop-tag">${p.status}</span>
+          ${galleryMarkup(p)}
         </div>
         <div class="prop-body">
           <div class="prop-addr">${p.addr}</div>
@@ -587,6 +657,7 @@
         </div>
       ${cardCloseTag(p)}
     `).join('');
+    wireGalleries('listingsGrid', listings);
   }
 
   function renderSold(sold, listingsCount){
@@ -595,6 +666,7 @@
         <div class="prop-img-wrap">
           <img src="${p.img}" alt="${p.addr}" loading="lazy">
           <span class="prop-tag sold">${p.status}</span>
+          ${galleryMarkup(p)}
         </div>
         <div class="prop-body">
           <div class="prop-addr">${p.addr}</div>
@@ -603,6 +675,7 @@
         </div>
       ${cardCloseTag(p)}
     `).join('');
+    wireGalleries('soldGrid', sold);
 
     function addrLines(addr){
       const idx = addr.indexOf(',');
