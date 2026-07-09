@@ -180,6 +180,7 @@
     font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:20px;
     color:var(--gold-soft);text-align:center;padding:14px 10px;
   }
+  .proof-card .price .sold-amount{color:var(--ink);}
   @keyframes slide{from{transform:translateX(0);}to{transform:translateX(-50%);}}
   @media(prefers-reduced-motion:reduce){.proof-track{animation:none;overflow-x:auto;}}
 
@@ -688,7 +689,7 @@
         ? `<a class="proof-card" href="${p.url}" target="_blank" rel="noopener noreferrer">`
         : `<div class="proof-card">`}
         <img src="${p.img}" alt="${p.addr}" loading="lazy">
-        ${p.price ? `<div class="price">${p.price}</div>` : `<div class="price">Sold</div>`}
+        <div class="price"><span class="sold-word">Sold</span>${p.price ? ` <span class="sold-amount">${p.price}</span>` : ''}</div>
       ${p.url ? `</a>` : `</div>`}
     `).join('');
     document.getElementById('proofTrack').innerHTML = proofItems + proofItems;
