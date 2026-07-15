@@ -63,6 +63,9 @@
   .list-item .addr{font-family:'Fraunces',serif;font-size:15px;}
   .list-item .meta{font-size:12.5px;color:var(--ink-mid);margin-top:2px;}
   .list-item .actions{display:flex;gap:8px;flex-shrink:0;}
+  .reorder-btns{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+  .reorder-btns button{width:26px;height:22px;padding:0;font-size:11px;line-height:1;}
+  .reorder-btns button:disabled{opacity:0.25;cursor:default;}
   .empty{color:var(--ink-low);font-size:14px;padding:20px 0;text-align:center;}
   .save-status{font-size:13px;min-height:16px;margin-top:10px;}
   .save-status.ok{color:#2E8B3E;} .save-status.err{color:#B33;}
@@ -510,8 +513,12 @@
       container.innerHTML = '<p class="empty">Nothing here yet — add one above.</p>';
       return;
     }
-    container.innerHTML = data.map(p => `
+    container.innerHTML = data.map((p, i) => `
       <div class="list-item">
+        <div class="reorder-btns">
+          <button type="button" class="btn-small" ${i === 0 ? 'disabled' : ''} data-order-up="${p.id}" aria-label="Move up">&#8593;</button>
+          <button type="button" class="btn-small" ${i === data.length - 1 ? 'disabled' : ''} data-order-down="${p.id}" aria-label="Move down">&#8595;</button>
+        </div>
         <img src="${p.image_url || ''}" alt="" onerror="this.style.visibility='hidden'">
         <div class="info">
           <div class="addr">${p.address}</div>
@@ -524,6 +531,13 @@
         </div>
       </div>
     `).join('');
+
+    container.querySelectorAll('[data-order-up]').forEach(btn => {
+      btn.addEventListener('click', () => reorderProperty(data, btn.dataset.orderUp, -1));
+    });
+    container.querySelectorAll('[data-order-down]').forEach(btn => {
+      btn.addEventListener('click', () => reorderProperty(data, btn.dataset.orderDown, 1));
+    });
 
     container.querySelectorAll('[data-edit]').forEach(btn => {
       btn.addEventListener('click', () => editItem(data.find(d => d.id === btn.dataset.edit)));
@@ -588,6 +602,24 @@
     if (!confirm('Delete this listing? This can\'t be undone.')) return;
     const { error } = await supabase.from('properties').delete().eq('id', id);
     if (error){ alert('Delete failed: ' + error.message); return; }
+    loadList();
+  }
+
+  async function reorderProperty(data, id, direction){
+    const index = data.findIndex(d => d.id === id);
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= data.length) return;
+
+    const reordered = [...data];
+    [reordered[index], reordered[newIndex]] = [reordered[newIndex], reordered[index]];
+
+    try {
+      await Promise.all(
+        reordered.map((p, i) => supabase.from('properties').update({ sort_order: i }).eq('id', p.id))
+      );
+    } catch (err) {
+      alert('Reordering failed: ' + err.message);
+    }
     loadList();
   }
 
