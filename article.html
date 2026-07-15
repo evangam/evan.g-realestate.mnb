@@ -35,6 +35,12 @@
   .excerpt{color:var(--ink-mid);font-size:19px;font-family:'Instrument Serif',serif;font-style:italic;margin:24px 0 8px;line-height:1.5;}
   .content{margin-top:32px;}
   .content p{color:var(--ink-mid);margin:0 0 20px;}
+  .source-box{
+    margin-top:8px;margin-bottom:32px;padding:16px 20px;border-radius:12px;
+    background:var(--bg-elev-2);border:1px solid var(--line);font-size:14px;color:var(--ink-mid);
+  }
+  .source-box a{color:var(--gold-soft);font-weight:600;text-decoration:none;}
+  .source-box a:hover{text-decoration:underline;}
   .not-found{padding:80px 0;text-align:center;}
   .not-found h1{font-size:32px;}
   .not-found p{color:var(--ink-mid);margin-top:12px;}
@@ -68,6 +74,7 @@
       <span class="eyebrow">Mosman &amp; Lower North Shore</span>
       <h1 id="artTitle"></h1>
       <p class="excerpt" id="artExcerpt" style="display:none;"></p>
+      <div class="source-box" id="artSourceBox" style="display:none;"></div>
       <div class="content" id="artBody"></div>
 
       <div class="cta-strip">
@@ -129,6 +136,14 @@
       if (data.excerpt){
         document.getElementById('artExcerpt').textContent = data.excerpt;
         document.getElementById('artExcerpt').style.display = 'block';
+      }
+
+      if (data.source_url){
+        let hostname = data.source_url;
+        try { hostname = new URL(data.source_url).hostname.replace('www.', ''); } catch (e) {}
+        const box = document.getElementById('artSourceBox');
+        box.innerHTML = `Originally published at <a href="${data.source_url}" target="_blank" rel="noopener noreferrer">${hostname} &#8250;</a>`;
+        box.style.display = 'block';
       }
 
       const paragraphs = (data.content || '').split(/\n+/).filter(p => p.trim());
