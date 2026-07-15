@@ -353,7 +353,7 @@
 <section class="hero" id="heroSection">
   <div class="wrap hero-inner">
     <div class="hero-badge-row">
-      <img id="heroAvatar" class="hero-avatar" src="https://d2hqr1s9kfm9jo.cloudfront.net/production/images/sales_agents/21244/Evan_gemini.profile.jpg" alt="Evan Gamkrelidze">
+      <img id="heroAvatar" class="hero-avatar" data-default-src="https://d2hqr1s9kfm9jo.cloudfront.net/production/images/sales_agents/21244/Evan_gemini.profile.jpg" alt="Evan Gamkrelidze">
       <span class="hero-badge-text"><strong>Evan Gamkrelidze</strong> · Mosman, NSW 2088</span>
     </div>
     <span class="eyebrow" style="color:var(--gold);">Sales Agent — Mosman / Neutral Bay / Lower North Shore</span>
@@ -379,7 +379,7 @@
 
 <section id="about">
   <div class="about-photo-wrap reveal">
-    <img id="aboutPhoto" class="about-photo" src="https://d2hqr1s9kfm9jo.cloudfront.net/production/images/sales_agents/21244/Evan_gemini.profile.jpg" alt="Evan Gamkrelidze">
+    <img id="aboutPhoto" class="about-photo" data-default-src="https://d2hqr1s9kfm9jo.cloudfront.net/production/images/sales_agents/21244/Evan_gemini.profile.jpg" alt="Evan Gamkrelidze">
   </div>
   <div class="wrap about-grid">
     <div class="reveal">
@@ -708,10 +708,17 @@
     return escaped.replace(/\*(.+?)\*/g, '<em>$1</em>');
   }
 
+  function revealPhotos(){
+    ['heroAvatar', 'aboutPhoto'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.getAttribute('src')) el.src = el.dataset.defaultSrc;
+      el.classList.add('photo-ready');
+    });
+  }
+
   async function loadSiteContent(){
     if (!isConfigured) {
-      document.getElementById('heroAvatar').classList.add('photo-ready');
-      document.getElementById('aboutPhoto').classList.add('photo-ready');
+      revealPhotos();
       return;
     }
     try {
@@ -742,8 +749,7 @@
     } catch (err) {
       console.warn('Site content fetch failed, keeping defaults:', err);
     } finally {
-      document.getElementById('heroAvatar').classList.add('photo-ready');
-      document.getElementById('aboutPhoto').classList.add('photo-ready');
+      revealPhotos();
     }
   }
 
@@ -773,10 +779,7 @@
   }
 
   loadSiteContent();
-  setTimeout(() => {
-    document.getElementById('heroAvatar').classList.add('photo-ready');
-    document.getElementById('aboutPhoto').classList.add('photo-ready');
-  }, 2500);
+  setTimeout(revealPhotos, 2500);
   loadTestimonials();
 
   (async () => {
