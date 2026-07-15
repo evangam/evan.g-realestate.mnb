@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Article — Evan Gamkrelidze</title>
+<meta name="description" id="pageDescription" content="Market notes and local insight from Evan Gamkrelidze, Mosman.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF8; --bg-elev:#FFFFFF; --bg-elev-2:#F1F0EC;
+    --ink:#17171A; --ink-mid:#5A5A57; --ink-low:#8C8C88;
+    --gold:#FFB300; --gold-soft:#B8790A;
+    --line:rgba(0,0,0,0.10); --line-strong:rgba(0,0,0,0.13);
+    --r-full:999px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:16.5px;line-height:1.75;}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px;}
+  header{padding:22px 0;border-bottom:1px solid var(--line);}
+  .back{font-size:14px;color:var(--ink-mid);text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+  .back:hover{color:var(--gold-soft);}
+  main{padding:0 0 100px;}
+  .cover-wrap{width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--bg-elev-2);margin-bottom:40px;}
+  .cover-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+  .eyebrow{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-soft);font-weight:600;}
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(32px,5.5vw,50px);line-height:1.1;margin:14px 0 0;letter-spacing:-0.015em;}
+  .excerpt{color:var(--ink-mid);font-size:19px;font-family:'Instrument Serif',serif;font-style:italic;margin:24px 0 8px;line-height:1.5;}
+  .content{margin-top:32px;}
+  .content p{color:var(--ink-mid);margin:0 0 20px;}
+  .not-found{padding:80px 0;text-align:center;}
+  .not-found h1{font-size:32px;}
+  .not-found p{color:var(--ink-mid);margin-top:12px;}
+  .cta-strip{
+    margin-top:56px;padding-top:36px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  }
+  .cta-strip p{color:var(--ink-mid);margin:0;font-size:15px;}
+  .btn-primary{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;
+    background:var(--gold);color:#171100;padding:13px 22px;border-radius:var(--r-full);
+    text-decoration:none;display:inline-block;white-space:nowrap;
+  }
+  footer{padding:32px 0;border-top:1px solid var(--line);color:var(--ink-low);font-size:13px;}
+  #loadingState{padding:80px 0;text-align:center;color:var(--ink-low);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="index.html#articles" class="back">&#8249; Back to articles</a>
+  </div>
+</header>
+
+<main>
+  <div id="loadingState" class="wrap">Loading…</div>
+  <div id="articleContent" style="display:none;">
+    <div class="cover-wrap"><img id="artCover" src="" alt=""></div>
+    <div class="wrap">
+      <span class="eyebrow">Mosman &amp; Lower North Shore</span>
+      <h1 id="artTitle"></h1>
+      <p class="excerpt" id="artExcerpt" style="display:none;"></p>
+      <div class="content" id="artBody"></div>
+
+      <div class="cta-strip">
+        <p>Thinking of buying or selling in Mosman?</p>
+        <a class="btn-primary" href="index.html#contact">Get in touch</a>
+      </div>
+    </div>
+  </div>
+  <div id="notFoundState" class="wrap not-found" style="display:none;">
+    <h1>Article not found</h1>
+    <p>This article may have been unpublished or the link is out of date.</p>
+    <p style="margin-top:24px;"><a href="index.html#articles" class="back">&#8249; Back to articles</a></p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 Evan Gamkrelidze — Independently operated marketing site. Backed by Raine &amp; Horne Mosman.</p>
+  </div>
+</footer>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://mmznrgyqmcwgcbojfzkg.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tem5yZ3lxbWN3Z2Nib2pmemtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4OTkxODMsImV4cCI6MjA5ODQ3NTE4M30.RzOySFa1BIB93FdBLS6PlrQltWyGPpqXqUYeHosCGDo';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('slug');
+
+  function escapeHtml(str){
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function showNotFound(){
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('notFoundState').style.display = 'block';
+  }
+
+  async function loadArticle(){
+    if (!slug){ showNotFound(); return; }
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('slug', slug)
+        .eq('published', true)
+        .single();
+
+      if (error || !data){ showNotFound(); return; }
+
+      document.title = `${data.title} — Evan Gamkrelidze`;
+      if (data.excerpt) document.getElementById('pageDescription').setAttribute('content', data.excerpt);
+
+      document.getElementById('artCover').src = data.cover_image_url || '';
+      document.getElementById('artTitle').textContent = data.title;
+
+      if (data.excerpt){
+        document.getElementById('artExcerpt').textContent = data.excerpt;
+        document.getElementById('artExcerpt').style.display = 'block';
+      }
+
+      const paragraphs = (data.content || '').split(/\n+/).filter(p => p.trim());
+      document.getElementById('artBody').innerHTML = paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('articleContent').style.display = 'block';
+    } catch (err) {
+      console.error('Article load failed:', err);
+      showNotFound();
+    }
+  }
+
+  loadArticle();
+</script>
+
+</body>
+</html>
