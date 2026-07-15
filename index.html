@@ -261,6 +261,24 @@
   .prop-price strong{color:var(--gold-soft);font-weight:400;font-style:italic;}
   .prop-meta{display:flex;gap:14px;margin-top:14px;font-size:13px;color:var(--ink-low);}
   @media(max-width:900px){.prop-grid{grid-template-columns:1fr;}}
+  .sold-pagination{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:40px;}
+  .page-arrow{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;color:var(--ink);
+    background:none;border:1px solid var(--line-strong);border-radius:var(--r-full);
+    padding:10px 18px;cursor:pointer;transition:border-color .2s ease, color .2s ease;
+  }
+  .page-arrow:hover:not(:disabled){border-color:var(--gold-soft);color:var(--gold-soft);}
+  .page-arrow:disabled{opacity:0.3;cursor:default;}
+  .page-dots{display:flex;gap:8px;}
+  .page-dots .dot{
+    width:8px;height:8px;border-radius:50%;background:var(--line-strong);border:none;cursor:pointer;padding:0;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .page-dots .dot.active{background:var(--gold-soft);transform:scale(1.25);}
+  @media(max-width:600px){
+    .sold-pagination{gap:14px;}
+    .page-arrow{padding:9px 14px;font-size:12.5px;}
+  }
   @media(min-width:901px) and (max-width:1180px){.prop-grid{grid-template-columns:repeat(2,1fr);}}
 
   /* ---------- Testimonials ---------- */
@@ -278,6 +296,24 @@
   }
   .testi-who .who{font-size:13px;color:var(--ink);font-weight:500;}
   @media(max-width:900px){.testi-grid{grid-template-columns:1fr;}}
+
+  /* ---------- Articles ---------- */
+  .article-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .article-card{
+    display:block;text-decoration:none;color:inherit;
+    background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-lg);
+    overflow:hidden;transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  .article-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--line-strong);}
+  .article-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--bg-elev-2);}
+  .article-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
+  .article-card:hover .article-img-wrap img{transform:scale(1.06);}
+  .article-body{padding:22px 24px 26px;}
+  .article-title{font-family:'Instrument Serif',serif;font-size:20px;line-height:1.3;font-weight:400;}
+  .article-excerpt{font-size:14px;color:var(--ink-mid);margin-top:10px;line-height:1.55;}
+  .article-readmore{font-size:13px;color:var(--gold-soft);margin-top:14px;font-weight:600;}
+  @media(max-width:900px){.article-grid{grid-template-columns:1fr;}}
+  @media(min-width:901px) and (max-width:1180px){.article-grid{grid-template-columns:repeat(2,1fr);}}
 
   /* ---------- Contact ---------- */
   .contact-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:72px;}
@@ -332,6 +368,7 @@
       <li><a href="#listings">Listings</a></li>
       <li><a href="#sold">Sold</a></li>
       <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#articles">Articles</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div style="display:flex;align-items:center;gap:10px;">
@@ -346,6 +383,7 @@
     <li><a href="#listings">Listings</a></li>
     <li><a href="#sold">Sold</a></li>
     <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#articles">Articles</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </header>
@@ -418,6 +456,11 @@
       <p>A sample of recent sales across Mosman, Neutral Bay and the Lower North Shore.</p>
     </div>
     <div class="prop-grid" id="soldGrid"></div>
+    <div class="sold-pagination" id="soldPagination" style="display:none;">
+      <button type="button" class="page-arrow" id="soldPrev" aria-label="Previous page">&#8249; Previous</button>
+      <div class="page-dots" id="soldDots"></div>
+      <button type="button" class="page-arrow" id="soldNext" aria-label="Next page">Next &#8250;</button>
+    </div>
   </div>
 </section>
 
@@ -428,6 +471,17 @@
       <h2>What clients say after <em>settlement</em></h2>
     </div>
     <div class="testi-grid" id="testiGrid"></div>
+  </div>
+</section>
+
+<section id="articles">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Local insight</span>
+      <h2>Notes from the <em>ground</em></h2>
+      <p>Market updates and observations from working Mosman and the Lower North Shore day to day.</p>
+    </div>
+    <div class="article-grid" id="articleGrid"></div>
   </div>
 </section>
 
@@ -543,6 +597,15 @@
   ];
   fallbackListings.forEach(p => { if (!p.photos) p.photos = [p.img]; });
   fallbackSold.forEach(p => { if (!p.photos) p.photos = [p.img]; });
+
+  const fallbackArticles = [
+    {
+      slug: 'welcome',
+      title: 'Welcome — market notes coming soon',
+      excerpt: 'This is where market updates and local insight will appear once published from the admin panel.',
+      cover_image_url: PLACEHOLDER_IMG,
+    },
+  ];
 
   const testimonials = [
     { quote: "Evan made our first home purchase stress-free — honest, responsive, and clearly the local expert. We love our new home.", who: "Katie, Purchaser" },
@@ -669,8 +732,33 @@
     wireGalleries('listingsGrid', listings);
   }
 
+  let soldPages = [];
+  let soldPage = 0;
+  const SOLD_PAGE_SIZE = 9;
+
   function renderSold(sold, listingsCount){
-    document.getElementById('soldGrid').innerHTML = sold.map(p => `
+    soldPages = [];
+    for (let i = 0; i < sold.length; i += SOLD_PAGE_SIZE) {
+      soldPages.push(sold.slice(i, i + SOLD_PAGE_SIZE));
+    }
+    if (!soldPages.length) soldPages = [[]];
+    soldPage = 0;
+    renderSoldPage();
+
+    const proofItems = sold.map(p => `
+      ${p.url
+        ? `<a class="proof-card" href="${p.url}" target="_blank" rel="noopener noreferrer">`
+        : `<div class="proof-card">`}
+        <img src="${p.img}" alt="${p.addr}" loading="lazy">
+        <div class="price"><span class="sold-word">Sold</span>${p.price ? ` <span class="sold-amount">${p.price}</span>` : ''}</div>
+      ${p.url ? `</a>` : `</div>`}
+    `).join('');
+    document.getElementById('proofTrack').innerHTML = proofItems + proofItems;
+  }
+
+  function renderSoldPage(){
+    const pageItems = soldPages[soldPage];
+    document.getElementById('soldGrid').innerHTML = pageItems.map(p => `
       ${cardOpenTag(p)}
         <div class="prop-img-wrap">
           <img src="${p.img}" alt="${p.addr}" loading="lazy">
@@ -684,24 +772,31 @@
         </div>
       ${cardCloseTag(p)}
     `).join('');
-    wireGalleries('soldGrid', sold);
+    wireGalleries('soldGrid', pageItems);
 
-    function addrLines(addr){
-      const idx = addr.indexOf(',');
-      if (idx === -1) return addr;
-      return `${addr.slice(0, idx)}<br>${addr.slice(idx + 1).trim()}`;
+    const pagination = document.getElementById('soldPagination');
+    const totalPages = soldPages.length;
+    if (totalPages <= 1){
+      pagination.style.display = 'none';
+      return;
     }
-
-    const proofItems = sold.map(p => `
-      ${p.url
-        ? `<a class="proof-card" href="${p.url}" target="_blank" rel="noopener noreferrer">`
-        : `<div class="proof-card">`}
-        <img src="${p.img}" alt="${p.addr}" loading="lazy">
-        <div class="price"><span class="sold-word">Sold</span>${p.price ? ` <span class="sold-amount">${p.price}</span>` : ''}</div>
-      ${p.url ? `</a>` : `</div>`}
-    `).join('');
-    document.getElementById('proofTrack').innerHTML = proofItems + proofItems;
+    pagination.style.display = 'flex';
+    document.getElementById('soldPrev').disabled = soldPage === 0;
+    document.getElementById('soldNext').disabled = soldPage === totalPages - 1;
+    document.getElementById('soldDots').innerHTML = soldPages.map((_, i) =>
+      `<button type="button" class="dot${i === soldPage ? ' active' : ''}" data-page="${i}" aria-label="Page ${i + 1}"></button>`
+    ).join('');
+    document.getElementById('soldDots').querySelectorAll('.dot').forEach(dot => {
+      dot.addEventListener('click', () => { soldPage = Number(dot.dataset.page); renderSoldPage(); });
+    });
   }
+
+  document.getElementById('soldPrev').addEventListener('click', () => {
+    if (soldPage > 0){ soldPage--; renderSoldPage(); }
+  });
+  document.getElementById('soldNext').addEventListener('click', () => {
+    if (soldPage < soldPages.length - 1){ soldPage++; renderSoldPage(); }
+  });
 
   function formatEmphasis(str){
     const escaped = str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -782,6 +877,35 @@
   setTimeout(revealPhotos, 2500);
   loadTestimonials();
 
+  async function loadArticlesSection(){
+    let articles = fallbackArticles;
+    if (isConfigured){
+      try {
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('published', true)
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length) articles = data;
+      } catch (err) {
+        console.warn('Articles fetch failed, keeping demo content:', err);
+      }
+    }
+    document.getElementById('articleGrid').innerHTML = articles.map(a => `
+      <a class="article-card" href="article.html?slug=${encodeURIComponent(a.slug)}">
+        <div class="article-img-wrap">
+          <img src="${a.cover_image_url || PLACEHOLDER_IMG}" alt="${a.title}" loading="lazy">
+        </div>
+        <div class="article-body">
+          <div class="article-title">${a.title}</div>
+          ${a.excerpt ? `<div class="article-excerpt">${a.excerpt}</div>` : ''}
+          <div class="article-readmore">Read article &#8250;</div>
+        </div>
+      </a>
+    `).join('');
+  }
+
   (async () => {
     const [listings, sold] = await Promise.all([
       fetchCategory('current', fallbackListings),
@@ -789,6 +913,7 @@
     ]);
     renderListings(listings);
     renderSold(sold, listings.length);
+    loadArticlesSection();
   })();
 
   const observer = new IntersectionObserver((entries) => {
