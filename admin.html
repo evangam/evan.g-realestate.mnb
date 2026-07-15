@@ -40,7 +40,7 @@
     color:var(--ink);font-family:'Inter',sans-serif;font-size:14.5px;padding:11px 13px;margin-bottom:16px;
   }
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-soft);}
-  #loginStatus{font-size:13px;color:#B33;min-height:16px;margin-top:4px;}
+  #loginStatus{font-size:13px;min-height:16px;margin-top:4px;}
 
   /* App */
   #appView{display:none;}
@@ -66,13 +66,22 @@
   .empty{color:var(--ink-low);font-size:14px;padding:20px 0;text-align:center;}
   .save-status{font-size:13px;min-height:16px;margin-top:10px;}
   .save-status.ok{color:#2E8B3E;} .save-status.err{color:#B33;}
-  .gallery-thumb{position:relative;width:64px;height:48px;border-radius:8px;overflow:hidden;flex-shrink:0;}
+  .gallery-thumb{position:relative;width:78px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0;}
   .gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-  .gallery-thumb button{
+  .gallery-thumb .thumb-remove{
     position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;
     background:rgba(0,0,0,0.65);color:#fff;border:none;font-size:11px;line-height:1;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;padding:0;
+    display:flex;align-items:center;justify-content:center;padding:0;z-index:2;
   }
+  .thumb-move{
+    position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;
+    background:rgba(0,0,0,0.55);
+  }
+  .thumb-move button{
+    flex:1;background:none;border:none;color:#fff;font-size:13px;line-height:1;cursor:pointer;padding:4px 0;
+  }
+  .thumb-move button:disabled{opacity:0.25;cursor:default;}
+  .thumb-move button:not(:disabled):hover{background:rgba(255,255,255,0.15);}
 </style>
 </head>
 <body>
@@ -81,12 +90,40 @@
   <h1>Listings Admin</h1>
   <p>Sign in to manage your listings and sold results.</p>
   <div class="login-card">
-    <label for="loginEmail">Email</label>
-    <input type="email" id="loginEmail" autocomplete="username">
-    <label for="loginPass">Password</label>
-    <input type="password" id="loginPass" autocomplete="current-password">
-    <button class="btn-primary" style="width:100%;" id="loginBtn">Sign in</button>
-    <p id="loginStatus"></p>
+
+    <div id="loginForm">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" autocomplete="username">
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" autocomplete="current-password">
+      <button class="btn-primary" style="width:100%;" id="loginBtn">Sign in</button>
+      <p class="save-status" id="loginStatus"></p>
+      <p style="text-align:center;margin-top:16px;">
+        <a href="#" id="forgotLink" style="font-size:13px;color:var(--ink-mid);">Forgot password?</a>
+      </p>
+    </div>
+
+    <div id="forgotForm" style="display:none;">
+      <p style="margin-bottom:16px;color:var(--ink-mid);font-size:14px;">Enter your email and we'll send you a link to reset your password.</p>
+      <label for="forgotEmail">Email</label>
+      <input type="email" id="forgotEmail" autocomplete="username">
+      <button class="btn-primary" style="width:100%;" id="sendResetBtn">Send reset link</button>
+      <p class="save-status" id="forgotStatus"></p>
+      <p style="text-align:center;margin-top:16px;">
+        <a href="#" id="backToLoginLink" style="font-size:13px;color:var(--ink-mid);">Back to sign in</a>
+      </p>
+    </div>
+
+    <div id="resetForm" style="display:none;">
+      <p style="margin-bottom:16px;color:var(--ink-mid);font-size:14px;">Choose a new password.</p>
+      <label for="newPassword">New password</label>
+      <input type="password" id="newPassword" autocomplete="new-password">
+      <label for="confirmPassword">Confirm new password</label>
+      <input type="password" id="confirmPassword" autocomplete="new-password">
+      <button class="btn-primary" style="width:100%;" id="setPasswordBtn">Set new password</button>
+      <p class="save-status" id="resetStatus"></p>
+    </div>
+
   </div>
 </div>
 
@@ -293,12 +330,30 @@
     wrap.innerHTML = currentGalleryImages.map((url, i) => `
       <div class="gallery-thumb">
         <img src="${url}" alt="">
-        <button type="button" data-remove-thumb="${i}" aria-label="Remove photo">&times;</button>
+        <button type="button" class="thumb-remove" data-remove-thumb="${i}" aria-label="Remove photo">&times;</button>
+        <div class="thumb-move">
+          <button type="button" ${i === 0 ? 'disabled' : ''} data-move-left="${i}" aria-label="Move left">&#8249;</button>
+          <button type="button" ${i === currentGalleryImages.length - 1 ? 'disabled' : ''} data-move-right="${i}" aria-label="Move right">&#8250;</button>
+        </div>
       </div>
     `).join('');
     wrap.querySelectorAll('[data-remove-thumb]').forEach(btn => {
       btn.addEventListener('click', () => {
         currentGalleryImages.splice(Number(btn.dataset.removeThumb), 1);
+        renderGalleryThumbs();
+      });
+    });
+    wrap.querySelectorAll('[data-move-left]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.moveLeft);
+        [currentGalleryImages[i - 1], currentGalleryImages[i]] = [currentGalleryImages[i], currentGalleryImages[i - 1]];
+        renderGalleryThumbs();
+      });
+    });
+    wrap.querySelectorAll('[data-move-right]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.moveRight);
+        [currentGalleryImages[i + 1], currentGalleryImages[i]] = [currentGalleryImages[i], currentGalleryImages[i + 1]];
         renderGalleryThumbs();
       });
     });
@@ -324,16 +379,80 @@
 
   document.getElementById('loginBtn').addEventListener('click', async () => {
     loginStatus.textContent = '';
+    loginStatus.className = 'save-status';
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPass').value;
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error){ loginStatus.textContent = error.message; return; }
+    if (error){ loginStatus.textContent = error.message; loginStatus.className = 'save-status err'; return; }
     checkSession();
   });
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await supabase.auth.signOut();
     checkSession();
+  });
+
+  // ---- Forgot password ----
+  document.getElementById('forgotLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('forgotForm').style.display = 'block';
+  });
+  document.getElementById('backToLoginLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('forgotForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+  });
+  document.getElementById('sendResetBtn').addEventListener('click', async () => {
+    const email = document.getElementById('forgotEmail').value.trim();
+    const status = document.getElementById('forgotStatus');
+    status.className = 'save-status';
+    status.textContent = 'Sending…';
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname,
+    });
+    if (error){
+      status.textContent = error.message;
+      status.className = 'save-status err';
+      return;
+    }
+    status.textContent = 'Check your email for a reset link.';
+    status.className = 'save-status ok';
+  });
+
+  // ---- Reset password (triggered by the emailed recovery link) ----
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY'){
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('forgotForm').style.display = 'none';
+      document.getElementById('resetForm').style.display = 'block';
+    }
+  });
+  document.getElementById('setPasswordBtn').addEventListener('click', async () => {
+    const pw = document.getElementById('newPassword').value;
+    const confirmPw = document.getElementById('confirmPassword').value;
+    const status = document.getElementById('resetStatus');
+    status.className = 'save-status';
+    if (pw.length < 6){
+      status.textContent = 'Password must be at least 6 characters.';
+      status.className = 'save-status err';
+      return;
+    }
+    if (pw !== confirmPw){
+      status.textContent = 'Passwords do not match.';
+      status.className = 'save-status err';
+      return;
+    }
+    status.textContent = 'Saving…';
+    const { error } = await supabase.auth.updateUser({ password: pw });
+    if (error){
+      status.textContent = error.message;
+      status.className = 'save-status err';
+      return;
+    }
+    status.textContent = 'Password updated.';
+    status.className = 'save-status ok';
+    setTimeout(checkSession, 1000);
   });
 
   document.querySelectorAll('.tab').forEach(tab => {
