@@ -143,6 +143,7 @@
     <div class="tabs">
       <div class="tab active" data-cat="current">Current listings</div>
       <div class="tab" data-cat="sold">Sold results</div>
+      <div class="tab" data-cat="articles">Articles</div>
       <div class="tab" data-cat="settings">Settings</div>
     </div>
 
@@ -209,6 +210,51 @@
       <div class="panel">
         <h2 id="listTitle">Current listings</h2>
         <div id="listContainer"><p class="empty">Loading…</p></div>
+      </div>
+    </div>
+
+    <div id="articlesPanel" style="display:none;">
+      <div class="panel">
+        <h2 id="articleFormTitle">Add an article</h2>
+        <form id="articleForm">
+          <input type="hidden" id="articleEditId">
+          <div class="form-grid">
+            <div class="full">
+              <label for="articleTitle">Title</label>
+              <input type="text" id="articleTitle" required placeholder="e.g. Mosman Market Update — Winter 2026">
+            </div>
+            <div class="full">
+              <label for="articleSlug">URL slug (auto-filled from title — this becomes the article's web address)</label>
+              <input type="text" id="articleSlug" placeholder="mosman-market-update-winter-2026">
+            </div>
+            <div class="full">
+              <label for="articleExcerpt">Short excerpt (shown on the articles list)</label>
+              <textarea id="articleExcerpt" rows="2"></textarea>
+            </div>
+            <div class="full">
+              <label for="articleContent">Full article content (each paragraph on its own line)</label>
+              <textarea id="articleContent" rows="8"></textarea>
+            </div>
+            <div class="full">
+              <label for="articleCover">Cover photo</label>
+              <input type="file" id="articleCover" accept="image/*">
+            </div>
+            <div class="full">
+              <label style="display:flex;align-items:center;gap:8px;font-weight:400;">
+                <input type="checkbox" id="articlePublished" checked style="width:auto;margin:0;">
+                Published (visible on the live site)
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" id="articleSaveBtn">Save article</button>
+          <button type="button" class="btn-small" id="articleCancelBtn" style="display:none;margin-left:8px;">Cancel edit</button>
+          <p class="save-status" id="articleSaveStatus"></p>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Articles</h2>
+        <div id="articleListContainer"><p class="empty">Loading…</p></div>
       </div>
     </div>
 
@@ -464,16 +510,25 @@
       tab.classList.add('active');
       activeCategory = tab.dataset.cat;
 
+      document.getElementById('propertiesPanels').style.display = 'none';
+      document.getElementById('settingsPanel').style.display = 'none';
+      document.getElementById('articlesPanel').style.display = 'none';
+
       if (activeCategory === 'settings'){
-        document.getElementById('propertiesPanels').style.display = 'none';
         document.getElementById('settingsPanel').style.display = 'block';
         loadSiteContent();
         loadTestimonials();
         return;
       }
 
+      if (activeCategory === 'articles'){
+        document.getElementById('articlesPanel').style.display = 'block';
+        resetArticleForm();
+        loadArticles();
+        return;
+      }
+
       document.getElementById('propertiesPanels').style.display = 'block';
-      document.getElementById('settingsPanel').style.display = 'none';
       document.getElementById('formTitle').textContent =
         activeCategory === 'current' ? 'Add a current listing' : 'Add a sold result';
       document.getElementById('listTitle').textContent =
@@ -622,6 +677,177 @@
     }
     loadList();
   }
+
+  // ================= Articles =================
+  let articleEditingId = null;
+  let slugManuallyEdited = false;
+
+  function slugify(str){
+    return str.toLowerCase().trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
+  document.getElementById('articleTitle').addEventListener('input', (e) => {
+    if (!slugManuallyEdited) {
+      document.getElementById('articleSlug').value = slugify(e.target.value);
+    }
+  });
+  document.getElementById('articleSlug').addEventListener('input', () => {
+    slugManuallyEdited = true;
+  });
+
+  function resetArticleForm(){
+    articleEditingId = null;
+    slugManuallyEdited = false;
+    document.getElementById('articleForm').reset();
+    document.getElementById('articleEditId').value = '';
+    document.getElementById('articlePublished').checked = true;
+    document.getElementById('articleFormTitle').textContent = 'Add an article';
+    document.getElementById('articleSaveBtn').textContent = 'Save article';
+    document.getElementById('articleCancelBtn').style.display = 'none';
+  }
+  document.getElementById('articleCancelBtn').addEventListener('click', resetArticleForm);
+
+  async function loadArticles(){
+    const container = document.getElementById('articleListContainer');
+    container.innerHTML = '<p class="empty">Loading…</p>';
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (error){
+      container.innerHTML = `<p class="empty">Couldn't load articles: ${error.message}</p>`;
+      return;
+    }
+    if (!data.length){
+      container.innerHTML = '<p class="empty">No articles yet — add one above.</p>';
+      return;
+    }
+    container.innerHTML = data.map((a, i) => `
+      <div class="list-item">
+        <div class="reorder-btns">
+          <button type="button" class="btn-small" ${i === 0 ? 'disabled' : ''} data-art-up="${a.id}" aria-label="Move up">&#8593;</button>
+          <button type="button" class="btn-small" ${i === data.length - 1 ? 'disabled' : ''} data-art-down="${a.id}" aria-label="Move down">&#8595;</button>
+        </div>
+        <img src="${a.cover_image_url || ''}" alt="" onerror="this.style.visibility='hidden'">
+        <div class="info">
+          <div class="addr">${a.title}</div>
+          <div class="meta">${a.published ? 'Published' : 'Draft'} · /article.html?slug=${a.slug}</div>
+        </div>
+        <div class="actions">
+          <button class="btn-small" data-art-edit="${a.id}">Edit</button>
+          <button class="btn-danger" data-art-delete="${a.id}">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('[data-art-edit]').forEach(btn => {
+      btn.addEventListener('click', () => editArticle(data.find(d => d.id === btn.dataset.artEdit)));
+    });
+    container.querySelectorAll('[data-art-delete]').forEach(btn => {
+      btn.addEventListener('click', () => deleteArticle(btn.dataset.artDelete));
+    });
+    container.querySelectorAll('[data-art-up]').forEach(btn => {
+      btn.addEventListener('click', () => reorderArticle(data, btn.dataset.artUp, -1));
+    });
+    container.querySelectorAll('[data-art-down]').forEach(btn => {
+      btn.addEventListener('click', () => reorderArticle(data, btn.dataset.artDown, 1));
+    });
+  }
+
+  function editArticle(a){
+    articleEditingId = a.id;
+    slugManuallyEdited = true;
+    document.getElementById('articleEditId').value = a.id;
+    document.getElementById('articleTitle').value = a.title || '';
+    document.getElementById('articleSlug').value = a.slug || '';
+    document.getElementById('articleExcerpt').value = a.excerpt || '';
+    document.getElementById('articleContent').value = a.content || '';
+    document.getElementById('articlePublished').checked = !!a.published;
+    document.getElementById('articleFormTitle').textContent = 'Edit article';
+    document.getElementById('articleSaveBtn').textContent = 'Update article';
+    document.getElementById('articleCancelBtn').style.display = 'inline-block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function deleteArticle(id){
+    if (!confirm('Delete this article? This can\'t be undone.')) return;
+    const { error } = await supabase.from('articles').delete().eq('id', id);
+    if (error){ alert('Delete failed: ' + error.message); return; }
+    loadArticles();
+  }
+
+  async function reorderArticle(data, id, direction){
+    const index = data.findIndex(d => d.id === id);
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= data.length) return;
+    const reordered = [...data];
+    [reordered[index], reordered[newIndex]] = [reordered[newIndex], reordered[index]];
+    try {
+      await Promise.all(
+        reordered.map((a, i) => supabase.from('articles').update({ sort_order: i }).eq('id', a.id))
+      );
+    } catch (err) {
+      alert('Reordering failed: ' + err.message);
+    }
+    loadArticles();
+  }
+
+  document.getElementById('articleForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('articleSaveStatus');
+    const btn = document.getElementById('articleSaveBtn');
+    btn.disabled = true;
+    status.textContent = 'Saving…';
+    status.className = 'save-status';
+
+    try {
+      let coverUrl = null;
+      const fileInput = document.getElementById('articleCover');
+      if (fileInput.files && fileInput.files[0]){
+        const file = fileInput.files[0];
+        const path = `articles/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g,'_')}`;
+        const { error: upErr } = await supabase.storage.from('property-photos').upload(path, file, { upsert: true });
+        if (upErr) throw upErr;
+        const { data: pub } = supabase.storage.from('property-photos').getPublicUrl(path);
+        coverUrl = pub.publicUrl;
+      }
+
+      const slug = document.getElementById('articleSlug').value.trim() || slugify(document.getElementById('articleTitle').value);
+      const payload = {
+        title: document.getElementById('articleTitle').value.trim(),
+        slug,
+        excerpt: document.getElementById('articleExcerpt').value.trim() || null,
+        content: document.getElementById('articleContent').value.trim() || null,
+        published: document.getElementById('articlePublished').checked,
+      };
+      if (coverUrl) payload.cover_image_url = coverUrl;
+
+      let error;
+      if (articleEditingId){
+        ({ error } = await supabase.from('articles').update(payload).eq('id', articleEditingId));
+      } else {
+        ({ error } = await supabase.from('articles').insert(payload));
+      }
+      if (error) throw error;
+
+      status.textContent = 'Saved.';
+      status.className = 'save-status ok';
+      resetArticleForm();
+      loadArticles();
+    } catch (err){
+      console.error(err);
+      status.textContent = 'Error: ' + err.message;
+      status.className = 'save-status err';
+    } finally {
+      btn.disabled = false;
+    }
+  });
 
   document.getElementById('propForm').addEventListener('submit', async (e) => {
     e.preventDefault();
