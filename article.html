@@ -35,6 +35,11 @@
   .excerpt{color:var(--ink-mid);font-size:19px;font-family:'Instrument Serif',serif;font-style:italic;margin:24px 0 8px;line-height:1.5;}
   .content{margin-top:32px;}
   .content p{color:var(--ink-mid);margin:0 0 20px;}
+  .content strong{color:var(--ink);font-weight:600;}
+  .content .body-heading{
+    font-family:'Instrument Serif',serif;font-weight:400;font-size:27px;color:var(--ink);
+    margin:36px 0 16px;letter-spacing:-0.01em;
+  }
   .source-box{
     margin-top:8px;margin-bottom:32px;padding:16px 20px;border-radius:12px;
     background:var(--bg-elev-2);border:1px solid var(--line);font-size:14px;color:var(--ink-mid);
@@ -110,6 +115,21 @@
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
+  function formatInline(str){
+    return escapeHtml(str).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  }
+
+  function renderBody(content){
+    const blocks = (content || '').split(/\n+/).filter(b => b.trim());
+    return blocks.map(block => {
+      const trimmed = block.trim();
+      if (trimmed.startsWith('## ')) {
+        return `<h2 class="body-heading">${escapeHtml(trimmed.slice(3))}</h2>`;
+      }
+      return `<p>${formatInline(block)}</p>`;
+    }).join('');
+  }
+
   function showNotFound(){
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('notFoundState').style.display = 'block';
@@ -146,8 +166,7 @@
         box.style.display = 'block';
       }
 
-      const paragraphs = (data.content || '').split(/\n+/).filter(p => p.trim());
-      document.getElementById('artBody').innerHTML = paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+      document.getElementById('artBody').innerHTML = renderBody(data.content);
 
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('articleContent').style.display = 'block';
