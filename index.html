@@ -138,8 +138,8 @@
     opacity:0;transition:opacity .35s ease;
   }
   .hero-avatar.photo-ready{opacity:1;}
-  .hero-badge-text{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:.01em;color:rgba(245,245,242,0.85);}
-  .hero-badge-text strong{color:#fff;font-weight:600;}
+  .hero-badge-text{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:.01em;color:rgba(245,245,242,0.75);display:flex;flex-direction:column;gap:2px;}
+  .hero-badge-text strong{font-family:'Instrument Serif',serif;font-size:26px;font-weight:400;letter-spacing:-0.01em;color:#fff;line-height:1.1;}
   .hero h1{font-size:clamp(38px,5.6vw,68px);line-height:1.06;font-weight:400;color:#fff;max-width:16ch;}
   h1 em, h2 em, .lead em{font-style:italic;color:var(--gold-soft);font-weight:500;}
   .hero p.lede{color:rgba(245,245,242,0.82);font-size:18px;max-width:44ch;margin-top:22px;line-height:1.6;}
@@ -158,6 +158,7 @@
     .hero-avatar{width:42px;height:42px;}
     .hero-badge-row{gap:10px;margin-bottom:18px;}
     .hero-badge-text{font-size:12px;}
+    .hero-badge-text strong{font-size:20px;}
   }
 
   /* ---------- Proof strip (sold carousel) ---------- */
@@ -396,7 +397,7 @@
   <div class="wrap hero-inner">
     <div class="hero-badge-row">
       <img id="heroAvatar" class="hero-avatar" data-default-src="https://d2hqr1s9kfm9jo.cloudfront.net/production/images/sales_agents/21244/Evan_gemini.profile.jpg" alt="Evan Gamkrelidze">
-      <span class="hero-badge-text"><strong>Evan Gamkrelidze</strong> · Mosman, NSW 2088</span>
+      <span class="hero-badge-text"><strong>Evan Gamkrelidze</strong><span class="hero-badge-location">Mosman, NSW 2088</span></span>
     </div>
     <span class="eyebrow" style="color:var(--gold);">Sales Agent — Mosman / Neutral Bay / Lower North Shore</span>
     <h1 style="margin-top:16px;">A decade in one <em>harbour</em>, every result on the record.</h1>
