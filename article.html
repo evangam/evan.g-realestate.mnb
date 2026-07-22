@@ -40,6 +40,7 @@
     font-family:'Instrument Serif',serif;font-weight:400;font-size:27px;color:var(--ink);
     margin:36px 0 16px;letter-spacing:-0.01em;
   }
+  .content .body-hr{border:none;border-top:1px solid var(--line-strong);margin:36px 0;}
   .source-box{
     margin-top:8px;margin-bottom:32px;padding:16px 20px;border-radius:12px;
     background:var(--bg-elev-2);border:1px solid var(--line);font-size:14px;color:var(--ink-mid);
@@ -59,6 +60,12 @@
     background:var(--gold);color:#171100;padding:13px 22px;border-radius:var(--r-full);
     text-decoration:none;display:inline-block;white-space:nowrap;
   }
+  .btn-doc{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;
+    background:none;border:1.5px solid var(--gold);color:var(--gold-soft);padding:12px 20px;border-radius:var(--r-full);
+    text-decoration:none;display:inline-flex;align-items:center;gap:8px;margin-bottom:32px;
+  }
+  .btn-doc:hover{background:var(--gold);color:#171100;}
   footer{padding:32px 0;border-top:1px solid var(--line);color:var(--ink-low);font-size:13px;}
   #loadingState{padding:80px 0;text-align:center;color:var(--ink-low);}
 </style>
@@ -80,6 +87,7 @@
       <h1 id="artTitle"></h1>
       <p class="excerpt" id="artExcerpt" style="display:none;"></p>
       <div class="source-box" id="artSourceBox" style="display:none;"></div>
+      <a class="btn-doc" id="artDocBtn" href="#" style="display:none;" target="_blank" rel="noopener noreferrer">&#8595; <span id="artDocLabel">Download the report</span></a>
       <div class="content" id="artBody"></div>
 
       <div class="cta-strip">
@@ -123,6 +131,9 @@
     const blocks = (content || '').split(/\n+/).filter(b => b.trim());
     return blocks.map(block => {
       const trimmed = block.trim();
+      if (/^[_-]{3,}$/.test(trimmed)) {
+        return `<hr class="body-hr">`;
+      }
       if (trimmed.startsWith('## ')) {
         return `<h2 class="body-heading">${escapeHtml(trimmed.slice(3))}</h2>`;
       }
@@ -164,6 +175,12 @@
         const box = document.getElementById('artSourceBox');
         box.innerHTML = `Originally published at <a href="${data.source_url}" target="_blank" rel="noopener noreferrer">${hostname} &#8250;</a>`;
         box.style.display = 'block';
+      }
+
+      if (data.document_url){
+        document.getElementById('artDocBtn').href = data.document_url;
+        document.getElementById('artDocLabel').textContent = data.document_label || 'Download the report';
+        document.getElementById('artDocBtn').style.display = 'inline-flex';
       }
 
       document.getElementById('artBody').innerHTML = renderBody(data.content);
