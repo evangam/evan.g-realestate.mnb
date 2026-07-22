@@ -475,6 +475,11 @@
       <h2>What clients say after <em>settlement</em></h2>
     </div>
     <div class="testi-grid" id="testiGrid"></div>
+    <div class="sold-pagination" id="testiPagination" style="display:none;">
+      <button type="button" class="page-arrow" id="testiPrev" aria-label="Previous page">&#8249; Previous</button>
+      <div class="page-dots" id="testiDots"></div>
+      <button type="button" class="page-arrow" id="testiNext" aria-label="Next page">Next &#8250;</button>
+    </div>
   </div>
 </section>
 
@@ -852,6 +857,10 @@
     }
   }
 
+  let testiPages = [];
+  let testiPage = 0;
+  const TESTI_PAGE_SIZE = 9;
+
   async function loadTestimonials(){
     let list = testimonials;
     if (isConfigured){
@@ -865,7 +874,19 @@
         console.warn('Testimonials fetch failed, keeping defaults:', err);
       }
     }
-    document.getElementById('testiGrid').innerHTML = list.map(t => `
+
+    testiPages = [];
+    for (let i = 0; i < list.length; i += TESTI_PAGE_SIZE) {
+      testiPages.push(list.slice(i, i + TESTI_PAGE_SIZE));
+    }
+    if (!testiPages.length) testiPages = [[]];
+    testiPage = 0;
+    renderTestiPage();
+  }
+
+  function renderTestiPage(){
+    const pageItems = testiPages[testiPage];
+    document.getElementById('testiGrid').innerHTML = pageItems.map(t => `
       <div class="testi-card">
         <span class="mark">&ldquo;</span>
         <p>${t.quote}</p>
@@ -875,7 +896,30 @@
         </div>
       </div>
     `).join('');
+
+    const pagination = document.getElementById('testiPagination');
+    const totalPages = testiPages.length;
+    if (totalPages <= 1){
+      pagination.style.display = 'none';
+      return;
+    }
+    pagination.style.display = 'flex';
+    document.getElementById('testiPrev').disabled = testiPage === 0;
+    document.getElementById('testiNext').disabled = testiPage === totalPages - 1;
+    document.getElementById('testiDots').innerHTML = testiPages.map((_, i) =>
+      `<button type="button" class="dot${i === testiPage ? ' active' : ''}" data-page="${i}" aria-label="Page ${i + 1}"></button>`
+    ).join('');
+    document.getElementById('testiDots').querySelectorAll('.dot').forEach(dot => {
+      dot.addEventListener('click', () => { testiPage = Number(dot.dataset.page); renderTestiPage(); });
+    });
   }
+
+  document.getElementById('testiPrev').addEventListener('click', () => {
+    if (testiPage > 0){ testiPage--; renderTestiPage(); }
+  });
+  document.getElementById('testiNext').addEventListener('click', () => {
+    if (testiPage < testiPages.length - 1){ testiPage++; renderTestiPage(); }
+  });
 
   loadSiteContent();
   setTimeout(revealPhotos, 2500);
