@@ -244,6 +244,15 @@
               <input type="file" id="articleCover" accept="image/*">
             </div>
             <div class="full">
+              <label for="articleDocument">Attach a document (PDF report, etc. — optional)</label>
+              <input type="file" id="articleDocument" accept=".pdf,.doc,.docx,.xlsx">
+              <div id="articleDocCurrent" style="font-size:13px;color:var(--ink-mid);margin-top:6px;"></div>
+            </div>
+            <div class="full">
+              <label for="articleDocLabel">Download button text</label>
+              <input type="text" id="articleDocLabel" placeholder="e.g. Download the full report (PDF)">
+            </div>
+            <div class="full">
               <label style="display:flex;align-items:center;gap:8px;font-weight:400;">
                 <input type="checkbox" id="articlePublished" checked style="width:auto;margin:0;">
                 Published (visible on the live site)
@@ -703,15 +712,19 @@
     slugManuallyEdited = true;
   });
 
+  let currentArticleDocUrl = null;
+
   function resetArticleForm(){
     articleEditingId = null;
     slugManuallyEdited = false;
+    currentArticleDocUrl = null;
     document.getElementById('articleForm').reset();
     document.getElementById('articleEditId').value = '';
     document.getElementById('articlePublished').checked = true;
     document.getElementById('articleFormTitle').textContent = 'Add an article';
     document.getElementById('articleSaveBtn').textContent = 'Save article';
     document.getElementById('articleCancelBtn').style.display = 'none';
+    document.getElementById('articleDocCurrent').innerHTML = '';
   }
   document.getElementById('articleCancelBtn').addEventListener('click', resetArticleForm);
 
@@ -773,6 +786,11 @@
     document.getElementById('articleExcerpt').value = a.excerpt || '';
     document.getElementById('articleContent').value = a.content || '';
     document.getElementById('articleSourceUrl').value = a.source_url || '';
+    document.getElementById('articleDocLabel').value = a.document_label || '';
+    currentArticleDocUrl = a.document_url || null;
+    document.getElementById('articleDocCurrent').innerHTML = a.document_url
+      ? `Current file: <a href="${a.document_url}" target="_blank" rel="noopener noreferrer">${a.document_url.split('/').pop()}</a> — uploading a new one will replace it.`
+      : '';
     document.getElementById('articlePublished').checked = !!a.published;
     document.getElementById('articleFormTitle').textContent = 'Edit article';
     document.getElementById('articleSaveBtn').textContent = 'Update article';
@@ -823,6 +841,17 @@
         coverUrl = pub.publicUrl;
       }
 
+      let documentUrl = null;
+      const docInput = document.getElementById('articleDocument');
+      if (docInput.files && docInput.files[0]){
+        const file = docInput.files[0];
+        const path = `articles/documents/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g,'_')}`;
+        const { error: docErr } = await supabase.storage.from('property-photos').upload(path, file, { upsert: true });
+        if (docErr) throw docErr;
+        const { data: pubDoc } = supabase.storage.from('property-photos').getPublicUrl(path);
+        documentUrl = pubDoc.publicUrl;
+      }
+
       const slug = document.getElementById('articleSlug').value.trim() || slugify(document.getElementById('articleTitle').value);
       const payload = {
         title: document.getElementById('articleTitle').value.trim(),
@@ -830,9 +859,11 @@
         excerpt: document.getElementById('articleExcerpt').value.trim() || null,
         content: document.getElementById('articleContent').value.trim() || null,
         source_url: document.getElementById('articleSourceUrl').value.trim() || null,
+        document_label: document.getElementById('articleDocLabel').value.trim() || null,
         published: document.getElementById('articlePublished').checked,
       };
       if (coverUrl) payload.cover_image_url = coverUrl;
+      if (documentUrl) payload.document_url = documentUrl;
 
       let error;
       if (articleEditingId){
