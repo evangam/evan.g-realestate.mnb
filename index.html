@@ -79,8 +79,9 @@
   .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 40px;max-width:var(--max);margin:0 auto;}
   .nav-logo-link{display:flex;align-items:center;text-decoration:none;color:inherit;flex-shrink:0;}
   .nav-logo{height:auto;max-height:40px;width:auto;max-width:200px;display:block;}
-  .nav-name-center{flex:1;display:flex;justify-content:center;text-decoration:none;color:inherit;padding:0 16px;min-width:0;overflow:hidden;}
-  .nav-name{font-family:'Instrument Serif',serif;font-size:19px;font-weight:400;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+  .nav-name-center{flex:1;display:flex;align-items:center;justify-content:center;gap:16px;text-decoration:none;color:inherit;padding:0 16px;min-width:0;overflow:hidden;}
+  .nav-name-center::before{content:"";width:1px;height:26px;background:var(--line-strong);flex-shrink:0;}
+  .nav-name{font-family:'Instrument Serif',serif;font-size:23px;font-weight:400;color:var(--ink);letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
   .nav-name span{color:var(--gold-soft);font-style:italic;}
   .nav-links{display:flex;gap:32px;list-style:none;margin:0;padding:0;font-size:14px;flex-shrink:0;}
   .nav-links a{text-decoration:none;color:var(--ink-mid);transition:color .2s;}
@@ -112,7 +113,9 @@
     .nav{padding:14px 22px;gap:10px;}
     .nav-toggle{display:block;}
     .nav-logo{max-height:28px;max-width:90px;}
-    .nav-name{font-size:15px;}
+    .nav-name{font-size:17px;}
+    .nav-name-center{gap:10px;}
+    .nav-name-center::before{height:20px;}
     .nav-name-center{padding:0 8px;}
     .nav-cta{padding:9px 13px;font-size:12px;}
   }
