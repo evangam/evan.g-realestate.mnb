@@ -177,15 +177,16 @@
   }
   .proof-card{
     display:block;text-decoration:none;color:inherit;
-    width:200px;flex:0 0 auto;background:var(--bg-elev);border-radius:var(--r-md);
-    overflow:hidden;border:1px solid var(--line);transition:border-color .2s ease, transform .2s ease;
+    width:210px;flex:0 0 auto;background:var(--bg-elev);border-radius:var(--r-lg);
+    overflow:hidden;border:1px solid var(--line);transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;
   }
   a.proof-card{cursor:pointer;}
-  a.proof-card:hover{border-color:var(--line-strong);transform:translateY(-3px);}
-  .proof-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
+  a.proof-card:hover{border-color:var(--line-strong);transform:translateY(-6px);box-shadow:var(--shadow);}
+  .proof-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;transition:transform .5s ease;}
+  a.proof-card:hover img{transform:scale(1.05);}
   .proof-card .price{
     font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:20px;
-    color:var(--gold-soft);text-align:center;padding:14px 10px;
+    color:var(--gold-soft);text-align:center;padding:16px 10px;
   }
   .proof-card .price .sold-amount{color:var(--ink);}
   @keyframes slide{from{transform:translateX(0);}to{transform:translateX(-50%);}}
