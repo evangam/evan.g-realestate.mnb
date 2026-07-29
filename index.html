@@ -941,18 +941,16 @@
       }
     }
     document.getElementById('articleGrid').innerHTML = articles.map(a => {
-      const href = a.source_url || `article.html?slug=${encodeURIComponent(a.slug)}`;
-      const externalAttrs = a.source_url ? `target="_blank" rel="noopener noreferrer"` : '';
-      const readLabel = a.source_url ? 'Read the full report &#8250;' : 'Read article &#8250;';
+      const href = `article.html?slug=${encodeURIComponent(a.slug)}`;
       return `
-      <a class="article-card" href="${href}" ${externalAttrs}>
+      <a class="article-card" href="${href}">
         <div class="article-img-wrap">
           <img src="${a.cover_image_url || PLACEHOLDER_IMG}" alt="${a.title}" loading="lazy">
         </div>
         <div class="article-body">
           <div class="article-title">${a.title}</div>
           ${a.excerpt ? `<div class="article-excerpt">${a.excerpt}</div>` : ''}
-          <div class="article-readmore">${readLabel}</div>
+          <div class="article-readmore">Read article &#8250;</div>
         </div>
       </a>
     `;
