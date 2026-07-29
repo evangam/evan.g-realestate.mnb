@@ -901,7 +901,7 @@
       status.textContent = 'Saved.';
       status.className = 'save-status ok';
       resetArticleForm();
-      loadArticles();
+      withScrollPreserved(() => loadArticles(false));
     } catch (err){
       console.error(err);
       status.textContent = 'Error: ' + err.message;
@@ -971,7 +971,7 @@
       saveStatus.textContent = 'Saved.';
       saveStatus.className = 'save-status ok';
       resetForm();
-      loadList();
+      withScrollPreserved(() => loadList(false));
     } catch (err){
       console.error(err);
       saveStatus.textContent = 'Error: ' + err.message;
@@ -1084,9 +1084,9 @@
   }
   document.getElementById('testiCancelBtn').addEventListener('click', resetTestiForm);
 
-  async function loadTestimonials(){
+  async function loadTestimonials(showLoading = true){
     const container = document.getElementById('testiListContainer');
-    container.innerHTML = '<p class="empty">Loading…</p>';
+    if (showLoading) container.innerHTML = '<p class="empty">Loading…</p>';
     const { data, error } = await supabase
       .from('testimonials').select('*')
       .order('sort_order', { ascending: true })
@@ -1130,7 +1130,7 @@
         if (!confirm('Delete this testimonial?')) return;
         const { error } = await supabase.from('testimonials').delete().eq('id', btn.dataset.tdelete);
         if (error){ alert('Delete failed: ' + error.message); return; }
-        loadTestimonials();
+        withScrollPreserved(() => loadTestimonials(false));
       });
     });
   }
@@ -1159,7 +1159,7 @@
       status.textContent = 'Saved.';
       status.className = 'save-status ok';
       resetTestiForm();
-      loadTestimonials();
+      withScrollPreserved(() => loadTestimonials(false));
     } catch (err){
       console.error(err);
       status.textContent = 'Error: ' + err.message;
