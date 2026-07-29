@@ -244,9 +244,13 @@
               <input type="file" id="articleCover" accept="image/*">
             </div>
             <div class="full">
-              <label for="articleDocument">Attach a document (PDF report, etc. — optional)</label>
+              <label for="articleDocument">Attach a document (PDF report, etc. — only use this for content you own or have permission to host)</label>
               <input type="file" id="articleDocument" accept=".pdf,.doc,.docx,.xlsx">
               <div id="articleDocCurrent" style="font-size:13px;color:var(--ink-mid);margin-top:6px;"></div>
+              <label style="display:flex;align-items:center;gap:8px;font-weight:400;margin-top:10px;">
+                <input type="checkbox" id="articleRemoveDoc" style="width:auto;margin:0;">
+                Remove the attached document (use this if you're only permitted to link out, not host a copy)
+              </label>
             </div>
             <div class="full">
               <label for="articleDocLabel">Document caption (shown above the report, e.g. "API Q3 Market Report")</label>
@@ -731,6 +735,7 @@
     document.getElementById('articleSaveBtn').textContent = 'Save article';
     document.getElementById('articleCancelBtn').style.display = 'none';
     document.getElementById('articleDocCurrent').innerHTML = '';
+    document.getElementById('articleRemoveDoc').checked = false;
   }
   document.getElementById('articleCancelBtn').addEventListener('click', resetArticleForm);
 
@@ -870,6 +875,10 @@
       };
       if (coverUrl) payload.cover_image_url = coverUrl;
       if (documentUrl) payload.document_url = documentUrl;
+      if (document.getElementById('articleRemoveDoc').checked){
+        payload.document_url = null;
+        payload.document_label = null;
+      }
 
       let error;
       if (articleEditingId){
