@@ -377,6 +377,16 @@
 
   let activeCategory = 'current';
 
+  async function withScrollPreserved(fn){
+    const y = window.scrollY;
+    document.activeElement?.blur();
+    await fn();
+    requestAnimationFrame(() => {
+      window.scrollTo(0, y);
+      requestAnimationFrame(() => window.scrollTo(0, y));
+    });
+  }
+
   const STATUS_OPTIONS = {
     current: ['For Sale', 'Auction', 'Expressions of Interest', 'Off Market'],
     sold: ['Off Market', 'Private Treaty', 'Prior to Auction', 'Auction'],
@@ -680,7 +690,7 @@
     if (!confirm('Delete this listing? This can\'t be undone.')) return;
     const { error } = await supabase.from('properties').delete().eq('id', id);
     if (error){ alert('Delete failed: ' + error.message); return; }
-    loadList();
+    withScrollPreserved(loadList);
   }
 
   async function reorderProperty(data, id, direction){
@@ -698,7 +708,7 @@
     } catch (err) {
       alert('Reordering failed: ' + err.message);
     }
-    loadList();
+    withScrollPreserved(loadList);
   }
 
   // ================= Articles =================
@@ -813,7 +823,7 @@
     if (!confirm('Delete this article? This can\'t be undone.')) return;
     const { error } = await supabase.from('articles').delete().eq('id', id);
     if (error){ alert('Delete failed: ' + error.message); return; }
-    loadArticles();
+    withScrollPreserved(loadArticles);
   }
 
   async function reorderArticle(data, id, direction){
@@ -829,7 +839,7 @@
     } catch (err) {
       alert('Reordering failed: ' + err.message);
     }
-    loadArticles();
+    withScrollPreserved(loadArticles);
   }
 
   document.getElementById('articleForm').addEventListener('submit', async (e) => {
