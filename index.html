@@ -921,9 +921,7 @@
     if (testiPage < testiPages.length - 1){ testiPage++; renderTestiPage(); }
   });
 
-  loadSiteContent();
   setTimeout(revealPhotos, 2500);
-  loadTestimonials();
 
   async function loadArticlesSection(){
     let articles = fallbackArticles;
@@ -957,15 +955,28 @@
     }).join('');
   }
 
-  (async () => {
-    const [listings, sold] = await Promise.all([
-      fetchCategory('current', fallbackListings),
-      fetchCategory('sold', fallbackSold),
-    ]);
-    renderListings(listings);
-    renderSold(sold, listings.length);
-    loadArticlesSection();
-  })();
+  Promise.all([
+    loadSiteContent(),
+    loadTestimonials(),
+    (async () => {
+      const [listings, sold] = await Promise.all([
+        fetchCategory('current', fallbackListings),
+        fetchCategory('sold', fallbackSold),
+      ]);
+      renderListings(listings);
+      renderSold(sold, listings.length);
+      await loadArticlesSection();
+    })(),
+  ]).then(() => {
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      if (target) {
+        requestAnimationFrame(() => {
+          target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        });
+      }
+    }
+  });
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
