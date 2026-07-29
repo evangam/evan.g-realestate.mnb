@@ -425,8 +425,10 @@
   const appView = document.getElementById('appView');
   const loginStatus = document.getElementById('loginStatus');
   const userBadge = document.getElementById('userBadge');
+  let inPasswordRecovery = false;
 
   async function checkSession(){
+    if (inPasswordRecovery) return;
     const { data: { session } } = await supabase.auth.getSession();
     if (session){
       loginView.style.display = 'none';
@@ -485,6 +487,9 @@
   // ---- Reset password (triggered by the emailed recovery link) ----
   supabase.auth.onAuthStateChange((event) => {
     if (event === 'PASSWORD_RECOVERY'){
+      inPasswordRecovery = true;
+      loginView.style.display = 'block';
+      appView.style.display = 'none';
       document.getElementById('loginForm').style.display = 'none';
       document.getElementById('forgotForm').style.display = 'none';
       document.getElementById('resetForm').style.display = 'block';
@@ -514,6 +519,7 @@
     }
     status.textContent = 'Password updated.';
     status.className = 'save-status ok';
+    inPasswordRecovery = false;
     setTimeout(checkSession, 1000);
   });
 
