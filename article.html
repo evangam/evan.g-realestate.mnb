@@ -42,11 +42,18 @@
   }
   .content .body-hr{border:none;border-top:1px solid var(--line-strong);margin:36px 0;}
   .source-box{
-    margin-top:8px;margin-bottom:32px;padding:16px 20px;border-radius:12px;
-    background:var(--bg-elev-2);border:1px solid var(--line);font-size:14px;color:var(--ink-mid);
+    margin-top:8px;margin-bottom:32px;padding:20px 22px;border-radius:14px;
+    background:var(--bg-elev-2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
   }
-  .source-box a{color:var(--gold-soft);font-weight:600;text-decoration:none;}
-  .source-box a:hover{text-decoration:underline;}
+  .source-box .source-text{font-size:14px;color:var(--ink-mid);}
+  .source-box a{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;
+    background:var(--gold);color:#171100;padding:12px 22px;border-radius:var(--r-full);
+    text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .source-box a:hover{transform:translateY(-2px);box-shadow:0 10px 22px -8px rgba(255,179,0,0.5);}
   .not-found{padding:80px 0;text-align:center;}
   .not-found h1{font-size:32px;}
   .not-found p{color:var(--ink-mid);margin-top:12px;}
@@ -181,8 +188,11 @@
         let hostname = data.source_url;
         try { hostname = new URL(data.source_url).hostname.replace('www.', ''); } catch (e) {}
         const box = document.getElementById('artSourceBox');
-        box.innerHTML = `Originally published at <a href="${data.source_url}" target="_blank" rel="noopener noreferrer">${hostname} &#8250;</a>`;
-        box.style.display = 'block';
+        box.innerHTML = `
+          <span class="source-text">Originally published at ${hostname}</span>
+          <a href="${data.source_url}" target="_blank" rel="noopener noreferrer">View the original &#8250;</a>
+        `;
+        box.style.display = 'flex';
       }
 
       if (data.document_url){
