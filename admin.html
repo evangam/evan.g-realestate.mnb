@@ -583,9 +583,9 @@
   }
   document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
 
-  async function loadList(){
+  async function loadList(showLoading = true){
     const container = document.getElementById('listContainer');
-    container.innerHTML = '<p class="empty">Loading…</p>';
+    if (showLoading) container.innerHTML = '<p class="empty">Loading…</p>';
     const { data, error } = await supabase
       .from('properties')
       .select('*')
@@ -690,7 +690,7 @@
     if (!confirm('Delete this listing? This can\'t be undone.')) return;
     const { error } = await supabase.from('properties').delete().eq('id', id);
     if (error){ alert('Delete failed: ' + error.message); return; }
-    withScrollPreserved(loadList);
+    withScrollPreserved(() => loadList(false));
   }
 
   async function reorderProperty(data, id, direction){
@@ -708,7 +708,7 @@
     } catch (err) {
       alert('Reordering failed: ' + err.message);
     }
-    withScrollPreserved(loadList);
+    withScrollPreserved(() => loadList(false));
   }
 
   // ================= Articles =================
@@ -749,9 +749,9 @@
   }
   document.getElementById('articleCancelBtn').addEventListener('click', resetArticleForm);
 
-  async function loadArticles(){
+  async function loadArticles(showLoading = true){
     const container = document.getElementById('articleListContainer');
-    container.innerHTML = '<p class="empty">Loading…</p>';
+    if (showLoading) container.innerHTML = '<p class="empty">Loading…</p>';
     const { data, error } = await supabase
       .from('articles')
       .select('*')
@@ -823,7 +823,7 @@
     if (!confirm('Delete this article? This can\'t be undone.')) return;
     const { error } = await supabase.from('articles').delete().eq('id', id);
     if (error){ alert('Delete failed: ' + error.message); return; }
-    withScrollPreserved(loadArticles);
+    withScrollPreserved(() => loadArticles(false));
   }
 
   async function reorderArticle(data, id, direction){
@@ -839,7 +839,7 @@
     } catch (err) {
       alert('Reordering failed: ' + err.message);
     }
-    withScrollPreserved(loadArticles);
+    withScrollPreserved(() => loadArticles(false));
   }
 
   document.getElementById('articleForm').addEventListener('submit', async (e) => {
