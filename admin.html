@@ -373,7 +373,9 @@
 
   const SUPABASE_URL = 'https://mmznrgyqmcwgcbojfzkg.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tem5yZ3lxbWN3Z2Nib2pmemtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4OTkxODMsImV4cCI6MjA5ODQ3NTE4M30.RzOySFa1BIB93FdBLS6PlrQltWyGPpqXqUYeHosCGDo';
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { storage: window.sessionStorage },
+  });
 
   let activeCategory = 'current';
 
