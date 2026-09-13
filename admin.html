@@ -208,14 +208,6 @@
               <label for="listingUrl">Listing URL (realestate.com.au, Domain, or your R&amp;H page)</label>
               <input type="url" id="listingUrl" placeholder="https://www.realestate.com.au/...">
             </div>
-            <div class="full">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px;">
-                <label for="propertyDescription" style="margin:0;">Property description</label>
-                <button type="button" class="btn-small" id="importDescriptionBtn">Import from listing link</button>
-              </div>
-              <textarea id="propertyDescription" rows="8" placeholder="Add the property description, or paste a listing link above and import it."></textarea>
-              <p class="save-status" id="importDescriptionStatus"></p>
-            </div>
             <div>
               <label for="photo">Cover photo</label>
               <input type="file" id="photo" accept="image/*">
@@ -619,7 +611,6 @@
     document.getElementById('editId').value = '';
     document.getElementById('saveBtn').textContent = 'Save listing';
     document.getElementById('cancelEditBtn').style.display = 'none';
-    document.getElementById('importDescriptionStatus').textContent = '';
     currentGalleryImages = [];
     renderGalleryThumbs();
   }
@@ -702,7 +693,6 @@
     document.getElementById('sqm').value = p.sqm ?? '';
     document.getElementById('price').value = '';
     document.getElementById('listingUrl').value = p.listing_url || '';
-    document.getElementById('propertyDescription').value = p.description || '';
     document.getElementById('saveBtn').textContent = 'Move to Sold';
     document.getElementById('cancelEditBtn').style.display = 'inline-block';
     currentGalleryImages = Array.isArray(p.images) ? [...p.images] : [];
@@ -723,7 +713,6 @@
     document.getElementById('sqm').value = p.sqm ?? '';
     document.getElementById('price').value = p.price || '';
     document.getElementById('listingUrl').value = p.listing_url || '';
-    document.getElementById('propertyDescription').value = p.description || '';
     document.getElementById('saveBtn').textContent = 'Update listing';
     document.getElementById('cancelEditBtn').style.display = 'inline-block';
     currentGalleryImages = Array.isArray(p.images) ? [...p.images] : [];
@@ -1002,7 +991,6 @@
         price: document.getElementById('price').value.trim() || null,
         price_disclosed: !!document.getElementById('price').value.trim(),
         listing_url: document.getElementById('listingUrl').value.trim() || null,
-        description: document.getElementById('propertyDescription').value.trim() || null,
         images: currentGalleryImages,
       };
       if (imageUrl) payload.image_url = imageUrl;
@@ -1025,30 +1013,6 @@
       saveStatus.className = 'save-status err';
     } finally {
       saveBtn.disabled = false;
-    }
-  });
-
-  document.getElementById('importDescriptionBtn').addEventListener('click', async () => {
-    const url = document.getElementById('listingUrl').value.trim();
-    const status = document.getElementById('importDescriptionStatus');
-    const btn = document.getElementById('importDescriptionBtn');
-    status.className = 'save-status';
-    if (!url){ status.textContent = 'Add the listing link first.'; status.className = 'save-status err'; return; }
-    btn.disabled = true;
-    status.textContent = 'Importing description…';
-    try {
-      const response = await fetch(`/api/import-listing?url=${encodeURIComponent(url)}`);
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'The description could not be imported.');
-      if (!result.description) throw new Error('No property description was found on that page.');
-      document.getElementById('propertyDescription').value = result.description;
-      status.textContent = 'Description imported. Review it before saving.';
-      status.className = 'save-status ok';
-    } catch (err) {
-      status.textContent = `${err.message} You can paste the description manually.`;
-      status.className = 'save-status err';
-    } finally {
-      btn.disabled = false;
     }
   });
 
