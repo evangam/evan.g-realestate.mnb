@@ -17,13 +17,10 @@
   2) Vercel Analytics: enable "Web Analytics" in the Vercel project
      dashboard once deployed — the script tag below activates on its own.
 ============================================================= -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 
@@ -384,6 +381,8 @@
   .process-step h3{font-family:'Inter',sans-serif;font-size:17px;font-weight:600;margin:16px 0 9px;}
   .process-step p{font-size:14px;color:var(--ink-mid);margin:0;}
   .prop-card,.article-card,.testi-card,.contact-card{border-radius:var(--card-radius);}
+  #sold .prop-grid .prop-card:first-child{grid-column:span 2;}
+  #sold .prop-grid .prop-card:first-child .prop-img-wrap{aspect-ratio:2/1;}
   .prop-body,.article-body{min-height:152px;display:flex;flex-direction:column;}
   .prop-meta,.article-readmore{margin-top:auto;padding-top:16px;}
   .mobile-action-bar{display:none;}
@@ -404,6 +403,8 @@
     .process-step{border-bottom-color:var(--line);}
     .value-card:last-child,.process-step:last-child{border-bottom:0;}
     .prop-grid,.article-grid{gap:18px;}
+    #sold .prop-grid .prop-card:first-child{grid-column:auto;}
+    #sold .prop-grid .prop-card:first-child .prop-img-wrap{aspect-ratio:4/3;}
     .prop-body,.article-body{min-height:0;}
     .mobile-action-bar{position:fixed;display:grid;grid-template-columns:1fr 1.25fr;left:0;right:0;bottom:0;z-index:90;padding:9px 14px calc(9px + env(safe-area-inset-bottom));background:rgba(250,250,248,.92);backdrop-filter:blur(18px) saturate(150%);border-top:1px solid var(--line);gap:9px;}
     .mobile-action-bar a{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:999px;text-decoration:none;font-size:13px;font-weight:600;}
@@ -497,16 +498,16 @@
     <div class="reveal">
       <span class="eyebrow">About</span>
       <div class="stat-grid" style="margin-top:24px;">
-        <div class="stat-card"><span class="num" id="stat1Num">10</span><span class="label" id="stat1Label">Years, Lower North Shore</span></div>
-        <div class="stat-card"><span class="num" id="stat2Num">$5.5M</span><span class="label" id="stat2Label">Highest recorded sale, disclosed</span></div>
-        <div class="stat-card"><span class="num" id="stat3Num">6</span><span class="label" id="stat3Label">Client testimonials on record</span></div>
+        <div class="stat-card"><span class="num" id="stat1Num">13</span><span class="label" id="stat1Label">Years in property</span></div>
+        <div class="stat-card"><span class="num" id="stat2Num">10</span><span class="label" id="stat2Label">Years, Lower North Shore</span></div>
+        <div class="stat-card"><span class="num" id="stat3Num">$5.5M</span><span class="label" id="stat3Label">Highest disclosed sale</span></div>
       </div>
     </div>
     <div class="reveal">
       <p class="signature-quote">Tell people the truth early, <em>market harder</em> than the market expects, and land on a price that holds up under scrutiny.</p>
-      <p class="lead" id="bioLead">Evan is <em>renowned</em> for his deep knowledge of Mosman and the Lower North Shore, with a decade of experience representing prestige homes and apartments.</p>
+      <p class="lead" id="bioLead">Thirteen years in property. A decade focused on the <em>Lower North Shore</em>. Direct advice, disciplined campaigns and no theatre.</p>
       <p id="bioBody1">I've sat across the table from first-home buyers nervous about their biggest decision, and from vendors leaving homes their families held for decades. The job doesn't change: tell people the truth early, market harder than the market expects, and land on a price that holds up under scrutiny — from the buyer, the bank, and the vendor's own second-guessing.</p>
-      <p id="bioBody2">Backed by Raine &amp; Horne's Mosman office — the leading sales agency on the Lower North Shore — I pair meticulous attention to detail with a strategic, technology-led approach to marketing, so every listing gets a genuine competitive advantage, not just a spot online.</p>
+      <p id="bioBody2">Backed by Raine &amp; Horne Mosman, I pair meticulous attention to detail with a strategic, technology-led approach to marketing, so every listing gets a genuine competitive advantage, not just a spot online.</p>
       <a class="btn-ghost" href="#contact" style="margin-top:8px;">Get in touch</a>
     </div>
   </div>
@@ -529,17 +530,6 @@
   </div>
 </section>
 
-<section id="listings">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Currently listed</span>
-      <h2>On the <em>market</em> now</h2>
-      <p>Live listings across Mosman. Contact me directly for inspection times or an off-market conversation.</p>
-    </div>
-    <div class="prop-grid" id="listingsGrid"></div>
-  </div>
-</section>
-
 <section id="sold">
   <div class="wrap">
     <div class="section-head reveal">
@@ -553,6 +543,17 @@
       <div class="page-dots" id="soldDots"></div>
       <button type="button" class="page-arrow" id="soldNext" aria-label="Next page">Next &#8250;</button>
     </div>
+  </div>
+</section>
+
+<section id="listings">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Currently listed</span>
+      <h2>On the <em>market</em> now</h2>
+      <p>Live listings across Mosman. Contact me directly for inspection times or an off-market conversation.</p>
+    </div>
+    <div class="prop-grid" id="listingsGrid"></div>
   </div>
 </section>
 
@@ -759,6 +760,7 @@
     const cover = row.image_url || null;
     const photos = [cover, ...gallery].filter(Boolean);
     return {
+      id: row.id,
       addr: row.address,
       status: row.status,
       price: row.price_disclosed ? row.price : null,
@@ -769,7 +771,8 @@
       sqm: row.sqm,
       img: cover || PLACEHOLDER_IMG,
       photos: photos.length ? photos : [PLACEHOLDER_IMG],
-      url: row.listing_url || null,
+      url: row.id ? `property.html?id=${encodeURIComponent(row.id)}` : (row.listing_url || null),
+      portalUrl: row.listing_url || null,
     };
   }
 
