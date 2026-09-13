@@ -6,7 +6,7 @@
 <title>Listings Admin — Evan Gamkrelidze</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#FAFAF8; --bg-elev:#FFFFFF; --bg-elev-2:#F1F0EC;
@@ -17,8 +17,8 @@
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;line-height:1.55;}
-  h1,h2{font-family:'Fraunces',serif;font-weight:500;margin:0;}
-  .wrap{max-width:960px;margin:0 auto;padding:48px 28px 100px;}
+  h1,h2{font-family:'Playfair Display',serif;font-weight:500;margin:0;}
+  .wrap{max-width:1120px;margin:0 auto;padding:42px 28px 100px;}
   .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:12px;}
   .top h1{font-size:26px;}
   .badge{font-size:12px;color:var(--ink-mid);font-family:'Inter',sans-serif;}
@@ -60,7 +60,7 @@
   }
   .list-item img{width:64px;height:48px;object-fit:cover;border-radius:8px;background:var(--bg-elev-2);flex-shrink:0;}
   .list-item .info{flex:1;min-width:0;}
-  .list-item .addr{font-family:'Fraunces',serif;font-size:15px;}
+  .list-item .addr{font-family:'Playfair Display',serif;font-size:15px;}
   .list-item .meta{font-size:12.5px;color:var(--ink-mid);margin-top:2px;}
   .list-item .actions{display:flex;gap:8px;flex-shrink:0;}
   .reorder-btns{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
@@ -85,6 +85,15 @@
   }
   .thumb-move button:disabled{opacity:0.25;cursor:default;}
   .thumb-move button:not(:disabled):hover{background:rgba(255,255,255,0.15);}
+  .dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+  .metric{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-lg);padding:21px 22px;}
+  .metric-value{display:block;font-family:'Playfair Display',serif;font-size:30px;line-height:1;color:var(--gold-soft);}
+  .metric-label{display:block;margin-top:9px;font-size:12px;color:var(--ink-mid);}
+  .top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .preview-link{display:inline-flex;align-items:center;text-decoration:none;white-space:nowrap;}
+  @media(max-width:760px){
+    .wrap{padding:24px 16px 80px;}.dashboard{grid-template-columns:1fr 1fr}.tabs{overflow-x:auto;padding-bottom:5px}.tab{white-space:nowrap}.form-grid,.row3,.row4{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.list-item{align-items:flex-start;flex-wrap:wrap}.list-item .info{min-width:calc(100% - 112px)}.list-item .actions{width:100%;padding-left:42px;flex-wrap:wrap}.panel{padding:20px}.badge{display:none}
+  }
 </style>
 </head>
 <body>
@@ -134,10 +143,18 @@
   <div class="wrap">
     <div class="top">
       <h1>Listings Admin</h1>
-      <div style="display:flex;align-items:center;gap:14px;">
+      <div class="top-actions">
+        <a class="btn-ghost preview-link" href="/" target="_blank" rel="noopener">View live website ↗</a>
         <span class="badge" id="userBadge"></span>
         <button class="btn-ghost" id="logoutBtn">Sign out</button>
       </div>
+    </div>
+
+    <div class="dashboard" aria-label="Website overview">
+      <div class="metric"><span class="metric-value" id="metricCurrent">—</span><span class="metric-label">Current listings</span></div>
+      <div class="metric"><span class="metric-value" id="metricSold">—</span><span class="metric-label">Sold results</span></div>
+      <div class="metric"><span class="metric-value" id="metricArticles">—</span><span class="metric-label">Published articles</span></div>
+      <div class="metric"><span class="metric-value" id="metricLeads">—</span><span class="metric-label">Website enquiries</span></div>
     </div>
 
     <div class="tabs">
@@ -451,10 +468,24 @@
       appView.style.display = 'block';
       userBadge.textContent = session.user.email;
       loadList();
+      loadDashboard();
     } else {
       loginView.style.display = 'block';
       appView.style.display = 'none';
     }
+  }
+
+  async function loadDashboard(){
+    const queries = await Promise.all([
+      supabase.from('properties').select('*', { count: 'exact', head: true }).eq('category', 'current'),
+      supabase.from('properties').select('*', { count: 'exact', head: true }).eq('category', 'sold'),
+      supabase.from('articles').select('*', { count: 'exact', head: true }).eq('published', true),
+      supabase.from('leads').select('*', { count: 'exact', head: true }),
+    ]);
+    const ids = ['metricCurrent','metricSold','metricArticles','metricLeads'];
+    queries.forEach((result, index) => {
+      document.getElementById(ids[index]).textContent = result.error ? '—' : (result.count ?? 0);
+    });
   }
 
   document.getElementById('loginBtn').addEventListener('click', async () => {
@@ -615,6 +646,7 @@
           <div class="meta">${p.status}${p.price ? ' · ' + p.price : ''}${p.property_type ? ' · ' + p.property_type : ''}</div>
         </div>
         <div class="actions">
+          <a class="btn-small preview-link" href="property.html?id=${p.id}" target="_blank" rel="noopener">Preview ↗</a>
           ${activeCategory === 'current' ? `<button class="btn-small" data-move="${p.id}">Move to Sold</button>` : ''}
           <button class="btn-small" data-edit="${p.id}">Edit</button>
           <button class="btn-danger" data-delete="${p.id}">Delete</button>
@@ -780,6 +812,7 @@
           <div class="meta">${a.published ? 'Published' : 'Draft'} · /article.html?slug=${a.slug}</div>
         </div>
         <div class="actions">
+          <a class="btn-small preview-link" href="article.html?slug=${encodeURIComponent(a.slug)}" target="_blank" rel="noopener">Preview ↗</a>
           <button class="btn-small" data-art-edit="${a.id}">Edit</button>
           <button class="btn-danger" data-art-delete="${a.id}">Delete</button>
         </div>
