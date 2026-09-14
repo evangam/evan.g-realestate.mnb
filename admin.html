@@ -205,15 +205,15 @@
               <input type="text" id="price" placeholder="$1,180,000">
             </div>
             <div>
-              <label for="listingUrl">Listing URL (realestate.com.au, Domain, or your R&amp;H page)</label>
-              <input type="url" id="listingUrl" placeholder="https://www.realestate.com.au/...">
+              <label for="listingUrl">Listing webpage (Raine &amp; Horne preferred; Homely, REA and Domain also supported)</label>
+              <input type="url" id="listingUrl" placeholder="Paste the webpage for this property">
             </div>
             <div class="full">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px;">
                 <label for="propertyDescription" style="margin:0;">Property description</label>
-                <button type="button" class="btn-small" id="importDescriptionBtn">Import from listing link</button>
+                <button type="button" class="btn-small" id="importDescriptionBtn">Copy website description</button>
               </div>
-              <textarea id="propertyDescription" rows="8" placeholder="Add the property description, or paste a listing link above and import it."></textarea>
+              <textarea id="propertyDescription" rows="8" placeholder="Add the description manually, or paste the property webpage above and select Copy website description."></textarea>
               <p class="save-status" id="importDescriptionStatus"></p>
             </div>
             <div>
@@ -1035,14 +1035,14 @@
     status.className = 'save-status';
     if (!url){ status.textContent = 'Add the listing link first.'; status.className = 'save-status err'; return; }
     btn.disabled = true;
-    status.textContent = 'Importing description…';
+    status.textContent = 'Copying website description…';
     try {
       const response = await fetch(`/api/import-listing?url=${encodeURIComponent(url)}`);
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'The description could not be imported.');
       if (!result.description) throw new Error('No property description was found on that page.');
       document.getElementById('propertyDescription').value = result.description;
-      status.textContent = 'Description imported. Review it before saving.';
+      status.textContent = 'Website description copied. Review it, then save the listing.';
       status.className = 'save-status ok';
     } catch (err) {
       status.textContent = `${err.message} You can paste the description manually.`;
