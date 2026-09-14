@@ -5,6 +5,8 @@ const ALLOWED_HOSTS = [
   'www.domain.com.au',
   'raineandhorne.com.au',
   'www.raineandhorne.com.au',
+  'homely.com.au',
+  'www.homely.com.au',
 ];
 
 function decode(value = '') {
