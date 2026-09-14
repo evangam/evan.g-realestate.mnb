@@ -46,6 +46,31 @@ function findDescription(value) {
   return '';
 }
 
+function normaliseImage(value) {
+  if (typeof value === 'string') return value;
+  if (!value || typeof value !== 'object') return '';
+  return value.url || value.contentUrl || value.src || '';
+}
+
+function findImages(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.flatMap(findImages);
+  if (typeof value !== 'object') return [];
+  const type = Array.isArray(value['@type']) ? value['@type'].join(' ') : String(value['@type'] || '');
+  if (/Residence|House|Apartment|Product|RealEstateListing|Accommodation/i.test(type) && value.image) {
+    const raw = Array.isArray(value.image) ? value.image : [value.image];
+    return raw.map(normaliseImage).filter(Boolean);
+  }
+  return Object.values(value).flatMap(findImages);
+}
+
+function safeImages(values) {
+  return [...new Set(values)].filter(value => {
+    try { return new URL(value).protocol === 'https:'; }
+    catch { return false; }
+  }).slice(0, 40);
+}
+
 function meta(html, key) {
   const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const patterns = [
@@ -85,18 +110,23 @@ export default async function handler(req, res) {
     if (html.length > 5000000) throw new Error('Listing page was too large');
 
     let description = '';
+    let images = [];
     const scripts = [...html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
     for (const script of scripts) {
       try {
-        description = findDescription(JSON.parse(script[1]));
-        if (description) break;
+        const data = JSON.parse(script[1]);
+        description ||= findDescription(data);
+        images.push(...findImages(data));
       } catch { /* Some portals include invalid JSON-LD; continue to metadata. */ }
     }
     description ||= meta(html, 'og:description') || meta(html, 'description');
-    if (!description || description.length < 40) {
-      return res.status(422).json({ error: 'This listing page did not expose an importable description.' });
+    const socialImage = meta(html, 'og:image');
+    if (socialImage) images.unshift(socialImage);
+    images = safeImages(images);
+    if ((!description || description.length < 40) && !images.length) {
+      return res.status(422).json({ error: 'This listing page did not expose an importable description or photos.' });
     }
-    return res.status(200).json({ description: description.slice(0, 12000), source: target.toString() });
+    return res.status(200).json({ description: description.slice(0, 12000), images, source: target.toString() });
   } catch (error) {
     return res.status(502).json({ error: `The listing site blocked the import or could not be reached: ${error.message}` });
   }
