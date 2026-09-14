@@ -5,6 +5,8 @@ const ALLOWED_HOSTS = [
   'www.domain.com.au',
   'raineandhorne.com.au',
   'www.raineandhorne.com.au',
+  'homely.com.au',
+  'www.homely.com.au',
 ];
 
 function decode(value = '') {
@@ -66,7 +68,7 @@ export default async function handler(req, res) {
   catch { return res.status(400).json({ error: 'Enter a valid listing URL.' }); }
 
   if (target.protocol !== 'https:' || !ALLOWED_HOSTS.includes(target.hostname.toLowerCase())) {
-    return res.status(400).json({ error: 'Use a Raine & Horne, Domain or realestate.com.au listing link.' });
+    return res.status(400).json({ error: 'Use a Raine & Horne, Homely, Domain or realestate.com.au listing link.' });
   }
 
   try {
