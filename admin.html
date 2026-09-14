@@ -211,7 +211,10 @@
             <div class="full">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px;">
                 <label for="propertyDescription" style="margin:0;">Property description</label>
-                <button type="button" class="btn-small" id="importDescriptionBtn">Copy website description</button>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+                  <button type="button" class="btn-small" id="importDescriptionBtn">Copy website description</button>
+                  <button type="button" class="btn-small" id="importPhotosBtn">Copy website photos</button>
+                </div>
               </div>
               <textarea id="propertyDescription" rows="8" placeholder="Add the description manually, or paste the property webpage above and select Copy website description."></textarea>
               <p class="save-status" id="importDescriptionStatus"></p>
@@ -427,6 +430,7 @@
   updateStatusOptions();
   let editingId = null;
   let currentGalleryImages = [];
+  let importedCoverImageUrl = null;
 
   function renderGalleryThumbs(){
     const wrap = document.getElementById('galleryThumbs');
@@ -621,6 +625,7 @@
     document.getElementById('cancelEditBtn').style.display = 'none';
     document.getElementById('importDescriptionStatus').textContent = '';
     currentGalleryImages = [];
+    importedCoverImageUrl = null;
     renderGalleryThumbs();
   }
   document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
@@ -706,6 +711,7 @@
     document.getElementById('saveBtn').textContent = 'Move to Sold';
     document.getElementById('cancelEditBtn').style.display = 'inline-block';
     currentGalleryImages = Array.isArray(p.images) ? [...p.images] : [];
+    importedCoverImageUrl = p.image_url || null;
     renderGalleryThumbs();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     loadList();
@@ -727,6 +733,7 @@
     document.getElementById('saveBtn').textContent = 'Update listing';
     document.getElementById('cancelEditBtn').style.display = 'inline-block';
     currentGalleryImages = Array.isArray(p.images) ? [...p.images] : [];
+    importedCoverImageUrl = p.image_url || null;
     renderGalleryThumbs();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -966,7 +973,7 @@
     saveStatus.className = 'save-status';
 
     try {
-      let imageUrl = null;
+      let imageUrl = importedCoverImageUrl;
       const fileInput = document.getElementById('photo');
       if (fileInput.files && fileInput.files[0]){
         const file = fileInput.files[0];
@@ -1046,6 +1053,33 @@
       status.className = 'save-status ok';
     } catch (err) {
       status.textContent = `${err.message} You can paste the description manually.`;
+      status.className = 'save-status err';
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('importPhotosBtn').addEventListener('click', async () => {
+    const url = document.getElementById('listingUrl').value.trim();
+    const status = document.getElementById('importDescriptionStatus');
+    const btn = document.getElementById('importPhotosBtn');
+    status.className = 'save-status';
+    if (!url){ status.textContent = 'Add the listing link first.'; status.className = 'save-status err'; return; }
+    btn.disabled = true;
+    status.textContent = 'Copying website photos…';
+    try {
+      const response = await fetch(`/api/import-listing?url=${encodeURIComponent(url)}`);
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'The photos could not be imported.');
+      const images = Array.isArray(result.images) ? [...new Set(result.images)] : [];
+      if (!images.length) throw new Error('No property photos were found on that page.');
+      importedCoverImageUrl = images[0];
+      currentGalleryImages = images.slice(1, 31);
+      renderGalleryThumbs();
+      status.textContent = `${images.length} website photo${images.length === 1 ? '' : 's'} copied. The first is the cover photo.`;
+      status.className = 'save-status ok';
+    } catch (err) {
+      status.textContent = `${err.message} You can still upload photos manually.`;
       status.className = 'save-status err';
     } finally {
       btn.disabled = false;
